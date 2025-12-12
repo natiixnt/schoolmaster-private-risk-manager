@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SCHOOL_ADMIN
+  DIRECTOR
+  TEACHER
+  COUNSELOR
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model School {
+  id        String   @id @default(uuid())
+  name      String
+  type      String?
+  city      String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+  classes   Class[]
+  students  Student[]
+}
+
+model User {
+  id             String       @id @default(uuid())
+  schoolId       String
+  email          String       @unique
+  hashedPassword String
+  role           UserRole
+  status         UserStatus   @default(ACTIVE)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  school         School       @relation(fields: [schoolId], references: [id])
+  refreshTokens  RefreshToken[]
+  classes        Class[]      @relation("TeacherClasses")
+}
+
+model Class {
+  id                 String    @id @default(uuid())
+  schoolId           String
+  name               String
+  yearLevel          Int?
+  homeroomTeacherId  String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  school             School    @relation(fields: [schoolId], references: [id])
+  homeroomTeacher    User?     @relation("TeacherClasses", fields: [homeroomTeacherId], references: [id])
+  students           Student[]
+
+  @@unique([schoolId, name])
+}
+
+model Student {
+  id         String         @id @default(uuid())
+  schoolId   String
+  classId    String
+  firstName  String
+  lastName   String
+  externalId String?
+  status     StudentStatus  @default(ACTIVE)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  school     School         @relation(fields: [schoolId], references: [id])
+  class      Class          @relation(fields: [classId], references: [id])
+
+  @@index([schoolId])
+  @@index([classId])
+  @@index([schoolId, externalId])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
