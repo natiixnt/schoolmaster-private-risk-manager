@@ -7,34 +7,38 @@ Monorepo for the Schoolmaster backend (NestJS + Prisma) and minimal dev frontend
 - Backend: NestJS, Prisma, PostgreSQL
 - Frontend: Next.js (app router) for smoke/dev tools only
 
-## Getting started
-1. **Install deps** (from repo root)
+## Prerequisites
+- Node 20+ with npm (repo uses workspaces + Turbo)
+- Docker + docker compose (for Postgres)
+
+## Quick start (dev)
+1. **Install deps** from repo root:
    ```bash
    npm install
    ```
-2. **Configure envs**
+2. **Configure envs** (root + per app):
    ```bash
    cp .env.example .env
    cp apps/api/.env.example apps/api/.env
    cp apps/web/.env.example apps/web/.env
    ```
    API JWT envs live in `apps/api/.env` (JWT_SECRET, JWT_REFRESH_SECRET, JWT_ACCESS_EXPIRES_IN, JWT_REFRESH_EXPIRES_IN).
-3. **Start everything (db + migrations + seed + dev servers)**
+3. **Launch the stack** (db + migrations + seed + dev servers):
    ```bash
    npm run dev:bootstrap
    ```
-   This will start Postgres (docker), apply Prisma migrations, seed demo data, and start API + web via Turbo.
-
-Manual alternative:
-- Start Postgres: `npm run db:up`
-- Migrate: `npm run db:migrate`
-- Seed: `npm run db:seed`
-- Dev servers: `npm run dev:apps`
+   This starts Postgres via docker compose, applies Prisma migrations, seeds demo data, and boots API + web via Turbo.
 4. **Smoke test**
    - API health: http://localhost:3001/health
    - Frontend: http://localhost:3000 (shows health call result)
    - Login: http://localhost:3000/auth/login (seeded admin user: `admin@schoolmaster.test` / `changeme`)
    - Dev tools: http://localhost:3000/dev/tools (CSV upload + classes/students fetch)
+
+### Manual bootstrap (if you prefer step-by-step)
+- Start Postgres: `npm run db:up`
+- Migrate: `npm run db:migrate`
+- Seed: `npm run db:seed`
+- Dev servers: `npm run dev:apps`
 
 ## Scripts (root)
 - `npm run dev:bootstrap` – start Postgres, migrate, seed, and run dev servers (fast path, API ready in seconds after Postgres is up)

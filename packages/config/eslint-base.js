@@ -7,6 +7,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: ['./tsconfig.json'],
+    // Use the cwd of the project being linted so workspaces pick up their own tsconfig
+    tsconfigRootDir: process.cwd(),
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint'],

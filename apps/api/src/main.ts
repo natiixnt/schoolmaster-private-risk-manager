@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+  // eslint-disable-next-line no-console
+  console.log('Starting Schoolmaster API...');
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   app.enableCors({
@@ -19,10 +21,10 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT || 3001;
+  const port = process.env.PORT ? Number(process.env.PORT) : 3001;
   await app.listen(port);
   // eslint-disable-next-line no-console
-  console.log(`API listening on http://localhost:${port}`);
+  console.log(`Schoolmaster API listening on http://localhost:${port}`);
 }
 
 bootstrap();

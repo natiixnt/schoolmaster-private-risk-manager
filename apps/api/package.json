@@ -10,8 +10,8 @@
     "lint": "eslint 'src/**/*.ts'",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
-    "prisma:deploy": "prisma migrate deploy",
-    "seed": "node -r ts-node/register -r tsconfig-paths/register ../../scripts/seed.ts"
+    "prisma:deploy": "prisma migrate deploy --schema prisma/schema.prisma --skip-generate",
+    "seed": "node ../../scripts/wait-for-db.js && TS_NODE_TRANSPILE_ONLY=1 node -r ts-node/register -r tsconfig-paths/register ../../scripts/seed.ts"
   },
   "prisma": {
     "seed": "ts-node ../../scripts/seed.ts"
@@ -50,6 +50,9 @@
     "prettier": "^3.2.5",
     "prisma": "^5.15.1",
     "ts-node": "^10.9.2",
+    "esbuild": "^0.21.5",
+    "esbuild-register": "^3.6.0",
+    "nodemon": "^3.1.7",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
