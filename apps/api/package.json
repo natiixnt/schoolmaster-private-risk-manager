@@ -11,7 +11,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
-    "seed": "node ../../scripts/wait-for-db.js && TS_NODE_TRANSPILE_ONLY=1 node -r ts-node/register -r tsconfig-paths/register ../../scripts/seed.ts"
+    "seed": "node ../../scripts/wait-for-db.js && npx prisma generate --schema prisma/schema.prisma && TS_NODE_TRANSPILE_ONLY=1 node -r ts-node/register -r tsconfig-paths/register ../../scripts/seed.ts"
   },
   "prisma": {
     "seed": "ts-node ../../scripts/seed.ts"

@@ -17,6 +17,16 @@ type StudentItem = {
   externalId?: string;
 };
 
+type RiskStudent = {
+  studentId: string;
+  firstName: string;
+  lastName: string;
+  class?: { id: string; name: string };
+  score: number;
+  level: string;
+  indicators: { name: string; value: unknown; level: string }[];
+};
+
 type ImportResult = {
   totalRows: number;
   createdStudents: number;
@@ -29,6 +39,7 @@ export default function DevToolsPage() {
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [students, setStudents] = useState<StudentItem[]>([]);
+  const [riskStudents, setRiskStudents] = useState<RiskStudent[]>([]);
   const [selectedClass, setSelectedClass] = useState<string | null>(null);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +80,33 @@ export default function DevToolsPage() {
       setSelectedClass(null);
     } catch (err: any) {
       setError(err?.message ?? 'Error loading classes');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadRisk = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await authedFetch('/risk/students');
+      setRiskStudents(data);
+    } catch (err: any) {
+      setError(err?.message ?? 'Error loading risk students');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const recalcRisk = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await authedFetch('/risk/recalculate', { method: 'POST' });
+      setError(`Recalculated: ${data.processed} students`);
+      await loadRisk();
+    } catch (err: any) {
+      setError(err?.message ?? 'Error recalculating risk');
     } finally {
       setLoading(false);
     }
@@ -161,6 +199,17 @@ export default function DevToolsPage() {
             <pre>{JSON.stringify(students, null, 2)}</pre>
           </div>
         )}
+      </section>
+
+      <section>
+        <h2>Risk (dev)</h2>
+        <button onClick={loadRisk} disabled={loading || !accessToken}>
+          Load risk students
+        </button>{' '}
+        <button onClick={recalcRisk} disabled={loading || !accessToken}>
+          Recalculate risk
+        </button>
+        {riskStudents.length > 0 && <pre>{JSON.stringify(riskStudents, null, 2)}</pre>}
       </section>
     </div>
   );

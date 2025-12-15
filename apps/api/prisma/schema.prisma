@@ -25,6 +25,39 @@ enum StudentStatus {
   LEFT
 }
 
+enum GradeType {
+  PARTIAL
+  SEMESTER
+  EXAM
+  OTHER
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  JUSTIFIED_ABSENT
+}
+
+enum BehaviorType {
+  INCIDENT
+  PRAISE
+  WARNING
+  NOTE
+}
+
+enum BehaviorSeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum RiskLevel {
+  GREEN
+  YELLOW
+  RED
+}
+
 model School {
   id        String   @id @default(uuid())
   name      String
@@ -36,6 +69,7 @@ model School {
   users     User[]
   classes   Class[]
   students  Student[]
+  riskIndicatorDefinitions RiskIndicatorDefinition[]
 }
 
 model User {
@@ -50,6 +84,7 @@ model User {
   school         School       @relation(fields: [schoolId], references: [id])
   refreshTokens  RefreshToken[]
   classes        Class[]      @relation("TeacherClasses")
+  behaviorEvents BehaviorEvent[] @relation("BehaviorAuthor")
 }
 
 model Class {
@@ -63,6 +98,9 @@ model Class {
   school             School    @relation(fields: [schoolId], references: [id])
   homeroomTeacher    User?     @relation("TeacherClasses", fields: [homeroomTeacherId], references: [id])
   students           Student[]
+  assessments        Assessment[]
+  attendances        Attendance[]
+  behaviorEvents     BehaviorEvent[]
 
   @@unique([schoolId, name])
 }
@@ -79,6 +117,11 @@ model Student {
   updatedAt  DateTime       @updatedAt
   school     School         @relation(fields: [schoolId], references: [id])
   class      Class          @relation(fields: [classId], references: [id])
+  assessments Assessment[]
+  attendances Attendance[]
+  behaviorEvents BehaviorEvent[]
+  riskScores  RiskScore[]
+  riskIndicatorValues RiskIndicatorValue[]
 
   @@index([schoolId])
   @@index([classId])
@@ -94,4 +137,95 @@ model RefreshToken {
   user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
+}
+
+model Assessment {
+  id         String    @id @default(uuid())
+  studentId  String
+  classId    String?
+  subject    String
+  gradeValue Decimal
+  gradeType  GradeType
+  date       DateTime
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  student    Student   @relation(fields: [studentId], references: [id])
+  class      Class?    @relation(fields: [classId], references: [id])
+
+  @@index([studentId])
+  @@index([classId])
+}
+
+model Attendance {
+  id         String            @id @default(uuid())
+  studentId  String
+  classId    String?
+  date       DateTime
+  lessonNo   Int?
+  status     AttendanceStatus
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  student    Student           @relation(fields: [studentId], references: [id])
+  class      Class?            @relation(fields: [classId], references: [id])
+
+  @@index([studentId])
+  @@index([classId])
+}
+
+model BehaviorEvent {
+  id               String            @id @default(uuid())
+  studentId        String
+  classId          String?
+  type             BehaviorType
+  severity         BehaviorSeverity
+  description      String?
+  createdByUserId  String
+  date             DateTime
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  student          Student           @relation(fields: [studentId], references: [id])
+  class            Class?            @relation(fields: [classId], references: [id])
+  createdBy        User              @relation("BehaviorAuthor", fields: [createdByUserId], references: [id])
+
+  @@index([studentId])
+  @@index([classId])
+  @@index([createdByUserId])
+}
+
+model RiskIndicatorDefinition {
+  id          String   @id @default(uuid())
+  schoolId    String?
+  name        String
+  description String
+  configJson  Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  school      School?  @relation(fields: [schoolId], references: [id])
+  values      RiskIndicatorValue[]
+}
+
+model RiskIndicatorValue {
+  id            String        @id @default(uuid())
+  studentId     String
+  indicatorId   String
+  value         Json
+  level         RiskLevel
+  calculatedAt  DateTime
+  student       Student       @relation(fields: [studentId], references: [id])
+  indicator     RiskIndicatorDefinition @relation(fields: [indicatorId], references: [id])
+
+  @@index([studentId])
+  @@index([indicatorId])
+}
+
+model RiskScore {
+  id            String     @id @default(uuid())
+  studentId     String
+  score         Int
+  level         RiskLevel
+  calculatedAt  DateTime
+  student       Student    @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId])
+  @@index([level])
 }
