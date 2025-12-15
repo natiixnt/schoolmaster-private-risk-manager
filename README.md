@@ -38,11 +38,19 @@ Monorepo for the Schoolmaster backend (NestJS + Prisma) and minimal dev frontend
 - Start Postgres: `npm run db:up`
 - Migrate: `npm run db:migrate`
 - Seed: `npm run db:seed`
-- Dev servers: `npm run dev:apps`
+- Dev servers (full stack): `npm run dev:apps`
+- API only: `npm run dev:api` (http://localhost:3001)
+- Web only: `npm run dev:web` (http://localhost:3000)
+
+Expected dev behavior:
+- Ports: web on 3000 (strict), API on 3001. If either is taken, the command will fail loudly.
+- Startup: with warm cache, Next.js should be ready in seconds; first page compile should be in the low seconds range on a typical laptop.
 
 ## Scripts (root)
-- `npm run dev:bootstrap` – start Postgres, migrate, seed, and run dev servers (fast path, API ready in seconds after Postgres is up)
+- `npm run dev:bootstrap` – start Postgres, migrate, seed, and run dev servers (API on 3001, web on 3000)
 - `npm run dev:apps` – turbo run dev across apps (API + web) without db bootstrap
+- `npm run dev:api` – API dev only (3001)
+- `npm run dev:web` – Web dev only (3000)
 - `npm run db:up` – start Postgres via docker-compose.dev.yml
 - `npm run db:migrate` – apply Prisma migrations for API (uses `.env` for DATABASE_URL)
 - `npm run db:seed` – seed demo data (idempotent)

@@ -9,6 +9,8 @@
   ],
   "scripts": {
     "dev:apps": "turbo run dev --filter=@schoolmaster/api --filter=@schoolmaster/web",
+    "dev:api": "npm run --workspace @schoolmaster/api dev",
+    "dev:web": "npm run --workspace @schoolmaster/web dev",
     "dev": "npm run dev:apps",
     "db:up": "docker compose -f infra/docker/docker-compose.dev.yml up -d postgres",
     "db:migrate": "dotenv -e .env -- node scripts/wait-for-db.js && dotenv -e .env -- npm run --workspace @schoolmaster/api prisma:deploy",
@@ -25,6 +27,6 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "npx": "^10.2.2"
+    "esbuild": "0.27.1"
   }
 }

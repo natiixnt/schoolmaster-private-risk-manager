@@ -1,8 +1,5 @@
 {
   "name": "@schoolmaster/config",
   "version": "0.1.0",
-  "private": true,
-  "main": "index.js",
-  "files": ["*"],
-  "license": "MIT"
+  "private": true
 }
