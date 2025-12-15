@@ -1,10 +1,11 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
+import { UserRole } from '@schoolmaster/core';
 
 export interface AuthRequestUser {
   userId: string;
   schoolId: string;
-  role: string;
+  role: UserRole;
   email: string;
 }
 

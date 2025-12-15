@@ -2,22 +2,26 @@ import { Controller, Post, UploadedFile, UseGuards, UseInterceptors } from '@nes
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportService } from './import.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { UserRole } from '@schoolmaster/core';
+import { AuthRequestUser, CurrentUser } from '../common/decorators/current-user.decorator';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.SCHOOL_ADMIN, UserRole.DIRECTOR)
+@UseGuards(JwtAuthGuard)
 @Controller('import')
 export class ImportController {
   constructor(private readonly importService: ImportService) {}
 
   @Post('students')
   @UseInterceptors(FileInterceptor('file'))
-  async importStudents(@CurrentUser() user: any, @UploadedFile() file?: Express.Multer.File) {
+  async importStudents(
+    @CurrentUser() user: AuthRequestUser,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
     if (!file) {
-      return { processed: 0, created: 0, errors: [{ row: 0, error: 'No file uploaded' }] };
+      return {
+        totalRows: 0,
+        createdStudents: 0,
+        createdClasses: 0,
+        errors: [{ rowNumber: 0, message: 'No file uploaded' }],
+      };
     }
 
     return this.importService.importStudents(user.schoolId, file.buffer);

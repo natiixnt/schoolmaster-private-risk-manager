@@ -14,7 +14,8 @@ export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
 
 export const StudentStatus = {
   ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
+  GRADUATED: 'GRADUATED',
+  LEFT: 'LEFT',
 } as const;
 export type StudentStatus = (typeof StudentStatus)[keyof typeof StudentStatus];
 

@@ -4,14 +4,14 @@
   "private": true,
   "main": "dist/main.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/main.ts",
+    "dev": "TS_NODE_TRANSPILE_ONLY=1 ts-node-dev --respawn --transpile-only --require tsconfig-paths/register --ignore-watch node_modules --ignore-watch dist --ignore-watch ../web --ignore-watch .turbo --ignore-watch ../web/.next src/main.ts",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
     "lint": "eslint 'src/**/*.ts'",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy",
-    "seed": "ts-node ../../scripts/seed.ts"
+    "seed": "node -r ts-node/register -r tsconfig-paths/register ../../scripts/seed.ts"
   },
   "prisma": {
     "seed": "ts-node ../../scripts/seed.ts"

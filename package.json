@@ -8,13 +8,19 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo run dev",
+    "dev:apps": "turbo run dev --filter=@schoolmaster/api --filter=@schoolmaster/web",
+    "dev": "npm run dev:apps",
+    "db:up": "docker compose -f infra/docker/docker-compose.dev.yml up -d postgres",
+    "db:migrate": "dotenv -e .env -- npm run --workspace @schoolmaster/api prisma:deploy",
+    "db:seed": "dotenv -e .env -- npm run --workspace @schoolmaster/api seed",
+    "dev:bootstrap": "bash ./scripts/dev-bootstrap.sh",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "seed": "turbo run seed --filter=api",
     "format": "turbo run format"
   },
   "devDependencies": {
+    "dotenv-cli": "^11.0.0",
     "turbo": "^2.0.3",
     "typescript": "^5.4.5"
   }

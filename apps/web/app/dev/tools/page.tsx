@@ -18,9 +18,10 @@ type StudentItem = {
 };
 
 type ImportResult = {
-  processed: number;
-  created: number;
-  errors: { row: number; error: string }[];
+  totalRows: number;
+  createdStudents: number;
+  createdClasses: number;
+  errors: { rowNumber: number; message: string }[];
 };
 
 export default function DevToolsPage() {
@@ -124,9 +125,11 @@ export default function DevToolsPage() {
   return (
     <div>
       <p>
-        Tokens: {accessToken ? 'loaded' : 'missing'} |{' '}
+        Tokens: access {accessToken ? 'loaded' : 'missing'} / refresh{' '}
+        {refreshToken ? 'loaded' : 'missing'} |{' '}
         {!accessToken && <a href="/auth/login">Go to login</a>}
       </p>
+      {!accessToken && <p>Not logged in. Please <a href="/auth/login">login</a> to use tools.</p>}
       {error && <div style={{ color: 'red' }}>{error}</div>}
 
       <section>
@@ -138,14 +141,14 @@ export default function DevToolsPage() {
 
       <section>
         <h2>Classes & students</h2>
-        <button onClick={loadClasses} disabled={loading}>
+        <button onClick={loadClasses} disabled={loading || !accessToken}>
           Load classes
         </button>
         {classes.length > 0 && (
           <ul>
             {classes.map((cls) => (
               <li key={cls.id}>
-                <button onClick={() => loadStudents(cls.id)} disabled={loading}>
+                <button onClick={() => loadStudents(cls.id)} disabled={loading || !accessToken}>
                   {cls.name} {cls.yearLevel ? `(Year ${cls.yearLevel})` : ''}
                 </button>
               </li>

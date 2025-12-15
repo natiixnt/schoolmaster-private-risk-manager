@@ -28,7 +28,10 @@ export class ClassesService {
 
   async getOrCreateByName(schoolId: string, name: string) {
     const existing = await this.prisma.class.findFirst({ where: { schoolId, name } });
-    if (existing) return existing;
-    return this.prisma.class.create({ data: { schoolId, name } });
+    if (existing) {
+      return { record: existing, created: false };
+    }
+    const created = await this.prisma.class.create({ data: { schoolId, name } });
+    return { record: created, created: true };
   }
 }

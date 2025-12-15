@@ -12,34 +12,37 @@ Monorepo for the Schoolmaster backend (NestJS + Prisma) and minimal dev frontend
    ```bash
    npm install
    ```
-2. **Start Postgres**
+2. **Configure envs**
    ```bash
-   docker compose -f infra/docker/docker-compose.dev.yml up -d postgres
+   cp .env.example .env
+   cp apps/api/.env.example apps/api/.env
+   cp apps/web/.env.example apps/web/.env
    ```
-3. **Configure envs**
-   - Copy `apps/api/.env.example` to `apps/api/.env` and adjust if needed.
-   - Copy `apps/web/.env.example` to `apps/web/.env`.
-4. **Run migrations + seed**
+   API JWT envs live in `apps/api/.env` (JWT_SECRET, JWT_REFRESH_SECRET, JWT_ACCESS_EXPIRES_IN, JWT_REFRESH_EXPIRES_IN).
+3. **Start everything (db + migrations + seed + dev servers)**
    ```bash
-   # run from repo root
-   DATABASE_URL=postgresql://schoolmaster:schoolmaster@localhost:5432/schoolmaster \
-   npm run --workspace @schoolmaster/api prisma:migrate
+   npm run dev:bootstrap
+   ```
+   This will start Postgres (docker), apply Prisma migrations, seed demo data, and start API + web via Turbo.
 
-   DATABASE_URL=postgresql://schoolmaster:schoolmaster@localhost:5432/schoolmaster \
-   npm run --workspace @schoolmaster/api seed
-   ```
-5. **Start dev servers** (API on :3001, web on :3000)
-   ```bash
-   npx turbo run dev
-   ```
-6. **Smoke test**
+Manual alternative:
+- Start Postgres: `npm run db:up`
+- Migrate: `npm run db:migrate`
+- Seed: `npm run db:seed`
+- Dev servers: `npm run dev:apps`
+4. **Smoke test**
    - API health: http://localhost:3001/health
    - Frontend: http://localhost:3000 (shows health call result)
    - Login: http://localhost:3000/auth/login (seeded admin user: `admin@schoolmaster.test` / `changeme`)
    - Dev tools: http://localhost:3000/dev/tools (CSV upload + classes/students fetch)
 
 ## Scripts (root)
-- `npm run dev` – turbo run dev across apps
+- `npm run dev:bootstrap` – start Postgres, migrate, seed, and run dev servers (fast path, API ready in seconds after Postgres is up)
+- `npm run dev:apps` – turbo run dev across apps (API + web) without db bootstrap
+- `npm run db:up` – start Postgres via docker-compose.dev.yml
+- `npm run db:migrate` – apply Prisma migrations for API (uses `.env` for DATABASE_URL)
+- `npm run db:seed` – seed demo data (idempotent)
+- `npm run dev` – alias of `dev:apps`
 - `npm run build` – turbo build
 - `npm run lint` – turbo lint
 - `npm run seed` – seeds via API workspace
@@ -53,7 +56,7 @@ Monorepo for the Schoolmaster backend (NestJS + Prisma) and minimal dev frontend
   - `GET /auth/me` (JWT required)
 - Users (JWT + role SCHOOL_ADMIN/DIRECTOR): `GET /users`, `POST /users`, `PATCH /users/:id`
 - Classes & students (JWT): `GET /classes`, `GET /classes/:id/students`
-- Import (JWT + role SCHOOL_ADMIN/DIRECTOR): `POST /import/students` (CSV columns: class_name, first_name, last_name, external_id)
+- Import (JWT required): `POST /import/students` (CSV columns: class_name, first_name, last_name, external_id)
 
 ## Frontend (apps/web)
 Minimal app router pages for dev/testing only:

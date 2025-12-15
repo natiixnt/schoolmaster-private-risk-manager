@@ -21,13 +21,14 @@ enum UserStatus {
 
 enum StudentStatus {
   ACTIVE
-  INACTIVE
+  GRADUATED
+  LEFT
 }
 
 model School {
   id        String   @id @default(uuid())
   name      String
-  type      String?
+  type      String
   city      String?
   address   String?
   createdAt DateTime @default(now())

@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+import { UserStatus } from '@schoolmaster/core';
 
 @Injectable()
 export class UsersService {
@@ -27,16 +29,20 @@ export class UsersService {
       throw new BadRequestException('Email already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-    return this.prisma.user.create({
+    const plainPassword = dto.password ?? crypto.randomBytes(6).toString('base64url');
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
+    const user = await this.prisma.user.create({
       data: {
         email: dto.email,
         role: dto.role,
         hashedPassword,
         schoolId,
+        status: dto.status ?? UserStatus.ACTIVE,
       },
       select: { id: true, email: true, role: true, status: true },
     });
+
+    return { ...user, temporaryPassword: dto.password ? undefined : plainPassword };
   }
 
   async updateUser(schoolId: string, id: string, dto: UpdateUserDto) {

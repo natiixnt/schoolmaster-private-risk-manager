@@ -14,6 +14,11 @@ async function main() {
         address: 'Test Street 1',
       },
     });
+  } else if (!school.type) {
+    school = await prisma.school.update({
+      where: { id: school.id },
+      data: { type: 'PUBLIC' },
+    });
   }
 
   const password = 'changeme';

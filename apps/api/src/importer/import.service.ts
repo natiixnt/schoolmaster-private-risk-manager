@@ -24,44 +24,51 @@ export class ImportService {
       trim: true,
     }) as CsvRow[];
 
-    let processed = 0;
-    let created = 0;
-    const errors: { row: number; error: string }[] = [];
+    let totalRows = 0;
+    let createdStudents = 0;
+    let createdClasses = 0;
+    const errors: { rowNumber: number; message: string }[] = [];
     const classCache = new Map<string, string>();
 
     for (const record of records) {
-      processed += 1;
-      const rowNumber = processed;
+      totalRows += 1;
+      const rowNumber = totalRows;
       const className = record.class_name?.trim();
       const firstName = record.first_name?.trim();
       const lastName = record.last_name?.trim();
 
       if (!className || !firstName || !lastName) {
-        errors.push({ row: rowNumber, error: 'Missing required fields' });
+        errors.push({ rowNumber, message: 'Missing required fields' });
         continue;
       }
 
       try {
         let classId = classCache.get(className);
         if (!classId) {
-          const cls = await this.classesService.getOrCreateByName(schoolId, className);
+          const { record: cls, created } = await this.classesService.getOrCreateByName(
+            schoolId,
+            className,
+          );
           classId = cls.id;
           classCache.set(className, classId);
+          if (created) {
+            createdClasses += 1;
+          }
         }
 
-        await this.studentsService.createMany(schoolId, classId, [
+        const result = await this.studentsService.createMany(schoolId, classId, [
           {
             firstName,
             lastName,
             externalId: record.external_id ?? null,
           },
         ]);
-        created += 1;
+        createdStudents += result.count ?? 0;
       } catch (error: any) {
-        errors.push({ row: rowNumber, error: error?.message ?? 'Unknown error' });
+        errors.push({ rowNumber, message: error?.message ?? 'Unknown error' });
       }
     }
 
-    return { processed, created, errors };
+    return { totalRows, createdStudents, createdClasses, errors };
   }
 }

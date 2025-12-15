@@ -33,7 +33,7 @@ export class StudentsService {
       externalId: s.externalId,
       status: StudentStatus.ACTIVE,
     }));
-    if (payload.length === 0) return [];
+    if (payload.length === 0) return { count: 0 };
     return this.prisma.student.createMany({ data: payload, skipDuplicates: true });
   }
 }
