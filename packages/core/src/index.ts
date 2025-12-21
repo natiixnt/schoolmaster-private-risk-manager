@@ -3,6 +3,7 @@ export const UserRole = {
   DIRECTOR: 'DIRECTOR',
   TEACHER: 'TEACHER',
   COUNSELOR: 'COUNSELOR',
+  SUPERADMIN: 'SUPERADMIN',
 } as const;
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
@@ -35,5 +36,8 @@ export interface AuthUserInfo {
 export interface HealthResponse {
   status: 'ok';
   db: 'ok' | 'error';
+  uptimeSeconds?: number;
+  version?: string;
+  timestamp?: string;
   details?: Record<string, unknown>;
 }

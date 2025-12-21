@@ -16,6 +16,7 @@ import { AuthRequestUser, CurrentUser } from '../common/decorators/current-user.
   UserRole.DIRECTOR,
   UserRole.TEACHER,
   UserRole.COUNSELOR,
+  UserRole.SUPERADMIN,
 )
 @Controller('parent-issues')
 export class ParentIssuesController {

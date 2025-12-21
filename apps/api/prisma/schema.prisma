@@ -12,6 +12,7 @@ enum UserRole {
   DIRECTOR
   TEACHER
   COUNSELOR
+  SUPERADMIN
 }
 
 enum UserStatus {
@@ -91,6 +92,12 @@ enum StudentActionItemStatus {
   DONE
 }
 
+enum ReportType {
+  MONTHLY_DIRECTOR
+  CLASS_SUMMARY
+  PARENT_ISSUES_SUMMARY
+}
+
 model School {
   id        String   @id @default(uuid())
   name      String
@@ -104,6 +111,8 @@ model School {
   students  Student[]
   riskIndicatorDefinitions RiskIndicatorDefinition[]
   parentIssues ParentIssue[]
+  settings  SchoolSettings?
+  reports   Report[]
 }
 
 model User {
@@ -123,6 +132,7 @@ model User {
   parentIssueComments ParentIssueComment[]
   actionPlansCreated StudentActionPlan[] @relation("PlanCreator")
   actionItemsOwned StudentActionItem[] @relation("ActionItemOwner")
+  reportsCreated Report[] @relation("ReportCreator")
 }
 
 model Class {
@@ -337,4 +347,30 @@ model StudentActionItem {
 
   @@index([actionPlanId])
   @@index([ownerUserId])
+}
+
+model Report {
+  id              String     @id @default(uuid())
+  schoolId        String
+  type            ReportType
+  periodStart     DateTime
+  periodEnd       DateTime
+  filePath        String
+  createdAt       DateTime   @default(now())
+  createdByUserId String?
+  school          School     @relation(fields: [schoolId], references: [id])
+  createdBy       User?      @relation("ReportCreator", fields: [createdByUserId], references: [id])
+
+  @@index([schoolId])
+  @@index([type])
+}
+
+model SchoolSettings {
+  id            String   @id @default(uuid())
+  schoolId      String   @unique
+  riskGreenMax  Int?
+  riskYellowMax Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  school        School   @relation(fields: [schoolId], references: [id])
 }

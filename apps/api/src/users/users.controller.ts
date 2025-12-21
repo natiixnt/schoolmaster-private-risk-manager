@@ -9,7 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRole } from '@schoolmaster/core';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.SCHOOL_ADMIN, UserRole.DIRECTOR)
+@Roles(UserRole.SCHOOL_ADMIN, UserRole.DIRECTOR, UserRole.SUPERADMIN)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

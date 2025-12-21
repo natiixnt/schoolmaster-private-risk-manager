@@ -16,6 +16,7 @@ import { UserRole } from '@schoolmaster/core';
   UserRole.DIRECTOR,
   UserRole.TEACHER,
   UserRole.COUNSELOR,
+  UserRole.SUPERADMIN,
 )
 @Controller()
 export class ActionPlansController {

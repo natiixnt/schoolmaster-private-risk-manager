@@ -15,6 +15,7 @@ import { UserRole } from '@schoolmaster/core';
   UserRole.DIRECTOR,
   UserRole.TEACHER,
   UserRole.COUNSELOR,
+  UserRole.SUPERADMIN,
 )
 export class RiskController {
   constructor(private readonly riskService: RiskService) {}

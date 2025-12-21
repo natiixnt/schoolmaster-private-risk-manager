@@ -11,8 +11,12 @@ import {
   ParentIssueStatus,
   StudentActionItemStatus,
   StudentActionPlanStatus,
+  ReportType,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
+import { promises as fs } from 'fs';
+import path from 'path';
 import { RiskService } from '../apps/api/src/risk/risk.service';
 import { PrismaService } from '../apps/api/src/prisma/prisma.service';
 
@@ -301,6 +305,54 @@ async function main() {
         }));
         await prisma.studentActionItem.createMany({ data: items });
       }
+    }
+  }
+
+  const existingSettings = await prisma.schoolSettings.findUnique({
+    where: { schoolId: school.id },
+  });
+  if (!existingSettings) {
+    await prisma.schoolSettings.create({
+      data: {
+        schoolId: school.id,
+        riskGreenMax: 30,
+        riskYellowMax: 60,
+      },
+    });
+  }
+
+  const existingReports = await prisma.report.count({ where: { schoolId: school.id } });
+  if (!existingReports) {
+    const now = new Date();
+    const endLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    const startLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endTwoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 1, 0);
+    const startTwoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+
+    const storageRoot = path.join(process.cwd(), 'storage', 'reports', school.id);
+    await fs.mkdir(storageRoot, { recursive: true });
+
+    const periods = [
+      { start: startLastMonth, end: endLastMonth },
+      { start: startTwoMonthsAgo, end: endTwoMonthsAgo },
+    ];
+
+    for (const period of periods) {
+      const reportId = randomUUID();
+      const filePath = path.posix.join('reports', school.id, `${reportId}.pdf`);
+      const fullPath = path.join(process.cwd(), 'storage', filePath);
+      await fs.writeFile(fullPath, 'Seeded report placeholder');
+      await prisma.report.create({
+        data: {
+          id: reportId,
+          schoolId: school.id,
+          type: ReportType.MONTHLY_DIRECTOR,
+          periodStart: period.start,
+          periodEnd: period.end,
+          filePath,
+          createdByUserId: adminUser.id,
+        },
+      });
     }
   }
 

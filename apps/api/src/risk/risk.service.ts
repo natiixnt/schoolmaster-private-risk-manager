@@ -269,6 +269,7 @@ export class RiskService {
   }
 
   private mapScoreToLevel(score: number): RiskLevel {
+    // TODO: Use school-level risk thresholds from settings when available.
     if (score <= 30) return RiskLevel.GREEN;
     if (score <= 60) return RiskLevel.YELLOW;
     return RiskLevel.RED;

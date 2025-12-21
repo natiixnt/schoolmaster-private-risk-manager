@@ -10,6 +10,8 @@ import { RiskModule } from './risk/risk.module';
 import { ParentIssuesModule } from './parent-issues/parent-issues.module';
 import { ActionPlansModule } from './action-plans/action-plans.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ReportsModule } from './reports/reports.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
     ParentIssuesModule,
     ActionPlansModule,
     DashboardModule,
+    ReportsModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}
