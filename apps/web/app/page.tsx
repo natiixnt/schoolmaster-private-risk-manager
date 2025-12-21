@@ -28,6 +28,9 @@ export default function HomePage() {
       {health && <pre>{JSON.stringify(health, null, 2)}</pre>}
       {error && <div>Failed to load health: {error}</div>}
       {!health && !error && <div>Loading...</div>}
+      <h1 className="text-3xl font-bold underline">
+        Hello world!
+      </h1>
     </section>
   );
 }
