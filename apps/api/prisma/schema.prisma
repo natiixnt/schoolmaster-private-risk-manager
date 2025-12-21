@@ -58,6 +58,39 @@ enum RiskLevel {
   RED
 }
 
+enum ParentIssueCategory {
+  COMPLAINT
+  QUESTION
+  SUGGESTION
+  PRAISE
+  OTHER
+}
+
+enum ParentIssueStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  CLOSED_NO_ACTION
+}
+
+enum ParentIssuePriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum StudentActionPlanStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+}
+
+enum StudentActionItemStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
 model School {
   id        String   @id @default(uuid())
   name      String
@@ -70,6 +103,7 @@ model School {
   classes   Class[]
   students  Student[]
   riskIndicatorDefinitions RiskIndicatorDefinition[]
+  parentIssues ParentIssue[]
 }
 
 model User {
@@ -85,6 +119,10 @@ model User {
   refreshTokens  RefreshToken[]
   classes        Class[]      @relation("TeacherClasses")
   behaviorEvents BehaviorEvent[] @relation("BehaviorAuthor")
+  parentIssuesAssigned ParentIssue[] @relation("IssueAssignee")
+  parentIssueComments ParentIssueComment[]
+  actionPlansCreated StudentActionPlan[] @relation("PlanCreator")
+  actionItemsOwned StudentActionItem[] @relation("ActionItemOwner")
 }
 
 model Class {
@@ -122,6 +160,8 @@ model Student {
   behaviorEvents BehaviorEvent[]
   riskScores  RiskScore[]
   riskIndicatorValues RiskIndicatorValue[]
+  parentIssues ParentIssue[]
+  actionPlans StudentActionPlan[]
 
   @@index([schoolId])
   @@index([classId])
@@ -228,4 +268,73 @@ model RiskScore {
 
   @@unique([studentId])
   @@index([level])
+}
+
+model ParentIssue {
+  id                String               @id @default(uuid())
+  schoolId          String
+  studentId         String?
+  guardianId        String?
+  category          ParentIssueCategory
+  title             String
+  description       String
+  status            ParentIssueStatus    @default(NEW)
+  priority          ParentIssuePriority  @default(MEDIUM)
+  assignedToUserId  String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  closedAt          DateTime?
+  school            School               @relation(fields: [schoolId], references: [id])
+  student           Student?             @relation(fields: [studentId], references: [id])
+  assignedTo        User?                @relation("IssueAssignee", fields: [assignedToUserId], references: [id])
+  comments          ParentIssueComment[]
+
+  @@index([schoolId])
+  @@index([studentId])
+  @@index([assignedToUserId])
+}
+
+model ParentIssueComment {
+  id           String      @id @default(uuid())
+  issueId      String
+  authorUserId String
+  comment      String
+  createdAt    DateTime    @default(now())
+  issue        ParentIssue @relation(fields: [issueId], references: [id])
+  author       User        @relation(fields: [authorUserId], references: [id])
+
+  @@index([issueId])
+  @@index([authorUserId])
+}
+
+model StudentActionPlan {
+  id               String                  @id @default(uuid())
+  studentId        String
+  createdByUserId  String
+  goal             String
+  status           StudentActionPlanStatus @default(OPEN)
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  student          Student                 @relation(fields: [studentId], references: [id])
+  createdBy        User                    @relation("PlanCreator", fields: [createdByUserId], references: [id])
+  items            StudentActionItem[]
+
+  @@index([studentId])
+  @@index([createdByUserId])
+}
+
+model StudentActionItem {
+  id            String                  @id @default(uuid())
+  actionPlanId  String
+  description   String
+  ownerUserId   String
+  dueDate       DateTime?
+  status        StudentActionItemStatus @default(TODO)
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  actionPlan    StudentActionPlan       @relation(fields: [actionPlanId], references: [id])
+  owner         User                    @relation("ActionItemOwner", fields: [ownerUserId], references: [id])
+
+  @@index([actionPlanId])
+  @@index([ownerUserId])
 }

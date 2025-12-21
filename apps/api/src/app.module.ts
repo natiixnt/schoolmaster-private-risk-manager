@@ -7,6 +7,9 @@ import { UsersModule } from './users/users.module';
 import { ClassesModule } from './classes/classes.module';
 import { ImportModule } from './importer/import.module';
 import { RiskModule } from './risk/risk.module';
+import { ParentIssuesModule } from './parent-issues/parent-issues.module';
+import { ActionPlansModule } from './action-plans/action-plans.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { RiskModule } from './risk/risk.module';
     ClassesModule,
     ImportModule,
     RiskModule,
+    ParentIssuesModule,
+    ActionPlansModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}
