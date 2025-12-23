@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import ThemeToggle from '../../../components/ThemeToggle';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -162,13 +163,16 @@ export default function DevToolsPage() {
 
   return (
     <div>
+      <div className="mb-4">
+        <ThemeToggle />
+      </div>
       <p>
         Tokens: access {accessToken ? 'loaded' : 'missing'} / refresh{' '}
         {refreshToken ? 'loaded' : 'missing'} |{' '}
         {!accessToken && <a href="/auth/login">Go to login</a>}
       </p>
       {!accessToken && <p>Not logged in. Please <a href="/auth/login">login</a> to use tools.</p>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {error && <div className="text-destructive">{error}</div>}
 
       <section>
         <h2>Upload students CSV</h2>
