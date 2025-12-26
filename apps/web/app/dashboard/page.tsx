@@ -100,7 +100,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* PRAWA: SPRAWY RODZICÓW (1/3 szerokości) */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col">
           <div className="px-6 py-5 border-b border-gray-100">
             <h3 className="font-bold text-gray-900">Najnowsze zgłoszenia</h3>
