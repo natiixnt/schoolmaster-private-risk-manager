@@ -2,11 +2,13 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export default function LoginPage() {
   const router = useRouter();
+  
   const [email, setEmail] = useState('admin@schoolmaster.test');
   const [password, setPassword] = useState('changeme');
   const [error, setError] = useState<string | null>(null);
@@ -29,14 +31,14 @@ export default function LoginPage() {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || 'Login failed');
+        throw new Error(body.message || 'Nieprawidłowe dane logowania');
       }
       const data = await res.json();
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
       router.push('/dev/tools');
     } catch (err: any) {
-      setError(err?.message ?? 'Unknown error');
+      setError(err?.message ?? 'Wystąpił nieznany błąd');
     } finally {
       setLoading(false);
     }
@@ -47,38 +49,145 @@ export default function LoginPage() {
   }
 
   return (
-    <section>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <div>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+    <div className="flex min-h-screen bg-white">
+      
+      <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:bg-indigo-900 lg:px-12 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+           <svg viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+              <g fill="none" stroke="currentColor" strokeWidth="100">
+                 <circle r="234" cx="196" cy="23" className="text-white" />
+                 <circle r="234" cx="790" cy="491" className="text-white" />
+              </g>
+           </svg>
+        </div>
+        
+        <div className="relative z-10 text-white max-w-lg">
+
+          <div className="text-4xl font-bold tracking-tight mb-6">
+            Schoolmaster
+          </div>
+          <h2 className="text-3xl font-semibold mb-4">
+            Zarządzaj swoją placówką<br />z jednego miejsca.
+          </h2>
+          <p className="text-indigo-200 text-lg leading-relaxed">
+            Kompleksowy system do zarządzania procesami w szkole. Dziennik, ocena ryzyka, sprawy rodziców i raporty – wszystko pod ręką.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 w-full lg:w-1/2">
+        <div className="mx-auto w-full max-w-sm lg:w-96">
+          
+  
+          <div className="lg:hidden text-center mb-10">
+            <h1 className="text-3xl font-bold text-indigo-600">Schoolmaster</h1>
+          </div>
+
+          <div className="text-left">
+            <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
+              Zaloguj się
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Wprowadź swoje dane, aby uzyskać dostęp do panelu.
+            </p>
+          </div>
+
+          <div className="mt-8">
+            <div className="mt-6">
+              
+       
+              {error && (
+                <div className="mb-4 rounded-md bg-red-50 p-4 border border-red-200 animate-fade-in">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-red-800">Błąd logowania</h3>
+                      <div className="mt-1 text-sm text-red-700">{error}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                
+            
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                    Adres Email
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={loading}
+                      className="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 disabled:bg-gray-50 disabled:text-gray-500 transition-all"
+                    />
+                  </div>
+                </div>
+
+            
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                      Hasło
+                    </label>
+                    <div className="text-sm">
+             
+                      <Link 
+                        href="/auth/forgot-password" 
+                        className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+                      >
+                        Zapomniałeś hasła?
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={loading}
+                      className="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 disabled:bg-gray-50 disabled:text-gray-500 transition-all"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+                  >
+                     {loading ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Logowanie...
+                      </span>
+                    ) : (
+                      'Zaloguj'
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <div>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-    </section>
+      </div>
+    </div>
   );
 }
