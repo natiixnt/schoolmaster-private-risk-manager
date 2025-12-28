@@ -4,7 +4,7 @@ import { Check } from 'lucide-react';
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-[100dvh] overflow-x-hidden bg-gradient-to-br from-background to-muted text-foreground before:pointer-events-none before:absolute before:left-[-6rem] before:top-[-4rem] before:h-72 before:w-72 before:rounded-full before:bg-primary/20 before:blur-3xl before:opacity-20 before:content-[''] after:pointer-events-none after:absolute after:bottom-[-6rem] after:right-[-8rem] after:h-96 after:w-96 after:rounded-full after:bg-primary/10 after:blur-3xl after:opacity-15 after:content-['']">
-      <div className="relative grid min-h-[100dvh] grid-cols-1 lg:grid-cols-2 lg:gap-16">
+      <div className="relative grid min-h-[100dvh] grid-cols-1 lg:grid-cols-[1fr_1.6fr] lg:gap-12">
         <aside className="hidden flex-col justify-between px-12 pb-12 pt-10 lg:flex">
           <div className="max-w-xl">
             <img
@@ -55,7 +55,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           </div>
           <p className="text-xs text-muted-foreground">Bezpieczny panel wewnętrzny</p>
         </aside>
-        <main className="flex items-center justify-center p-6 lg:p-12">
+        <main className="flex w-full items-center justify-center p-6 lg:px-6 lg:py-12">
           {children}
         </main>
       </div>

@@ -54,9 +54,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative w-full max-w-2xl">
+    <div className="relative w-full max-w-none px-2 sm:px-0">
       <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-primary/10 blur-2xl" />
-      <div className="rounded-2xl bg-card/90 p-8 shadow-xl ring-1 ring-border/30 backdrop-blur-sm sm:p-10">
+      <div className="mx-auto w-full rounded-2xl bg-card/90 p-8 shadow-xl ring-1 ring-border/20 backdrop-blur-sm sm:p-10 lg:w-[44rem]">
         <div className="mb-6 text-center">
           <h2 className="text-3xl font-semibold tracking-tight">Zaloguj się</h2>
           <p className="mt-1 text-sm text-muted-foreground">Wróć do swojego konta</p>
