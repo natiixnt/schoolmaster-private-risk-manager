@@ -80,6 +80,14 @@ Minimal app router pages for dev/testing only:
 - `infra/docker/docker-compose.dev.yml` starts Postgres with default creds `schoolmaster/schoolmaster` and DB `schoolmaster` on port 5432.
 - Optional API Dockerfile: `infra/docker/Dockerfile.api` (simple build skeleton).
 
+## Troubleshooting
+- PowerShell blocks `npm.ps1`: use `npm.cmd` or `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+- Missing `@swc/register`: run `npm install` at repo root.
+- Missing `@schoolmaster/core/dist/index.js`: run `npm run --workspace @schoolmaster/core build` (or `dev` to watch).
+- `IsEnum`/`ReportType` undefined: run `npm run --workspace @schoolmaster/api prisma:generate` and ensure `.env` + `apps/api/.env` exist.
+- `P1000 Authentication failed`: another Postgres is on 5432. Stop the local service or change the Docker port and update `DATABASE_URL` in `.env` and `apps/api/.env`.
+- Windows `dev:bootstrap` fails (bash): use manual bootstrap or run via Git Bash/WSL.
+
 ## Notes
 - Shared configs live in `packages/config`; shared types in `packages/core`.
 - Prisma schema & migrations reside in `apps/api/prisma/`.
