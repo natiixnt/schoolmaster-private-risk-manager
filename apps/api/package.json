@@ -11,11 +11,11 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
-    "seed": "node ../../scripts/wait-for-db.js && npx prisma generate --schema prisma/schema.prisma && TS_NODE_TRANSPILE_ONLY=1 node -r ts-node/register -r tsconfig-paths/register ../../scripts/seed.ts",
+    "seed": "node ../../scripts/wait-for-db.js && npx prisma generate --schema prisma/schema.prisma && node ../../scripts/run-seed.js",
     "test": "node --test --require ./test/setup.js test/**/*.test.js"
   },
   "prisma": {
-    "seed": "ts-node ../../scripts/seed.ts"
+    "seed": "node ../../scripts/run-seed.js"
   },
   "dependencies": {
     "@schoolmaster/core": "0.1.0",
