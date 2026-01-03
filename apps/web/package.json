@@ -20,13 +20,8 @@
     "@types/node": "^20.14.2",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
-<<<<<<< HEAD
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.3",
-=======
-    "eslint": "^9.0.0",
-    "eslint-config-next": "^16.0.10",
->>>>>>> dc1b5b251da34fb8c74e7a11f6d9491d29f274d7
     "typescript": "^5.4.5"
   }
 }
