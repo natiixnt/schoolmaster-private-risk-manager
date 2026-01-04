@@ -84,6 +84,28 @@ export class RiskService {
     }));
   }
 
+  async getRiskSummary(params: { schoolId: string; classId?: string }) {
+    const riskCounts = await this.prisma.riskScore.groupBy({
+      by: ['level'],
+      _count: { _all: true },
+      where: {
+        student: {
+          schoolId: params.schoolId,
+          classId: params.classId ?? undefined,
+        },
+      },
+    });
+
+    const summary = { green: 0, yellow: 0, red: 0, total: 0 };
+    riskCounts.forEach((row) => {
+      if (row.level === RiskLevel.GREEN) summary.green = row._count._all;
+      if (row.level === RiskLevel.YELLOW) summary.yellow = row._count._all;
+      if (row.level === RiskLevel.RED) summary.red = row._count._all;
+    });
+    summary.total = summary.green + summary.yellow + summary.red;
+    return summary;
+  }
+
   async getRiskForStudent(studentId: string, schoolId: string) {
     const student = await this.prisma.student.findFirst({
       where: { id: studentId, schoolId },

@@ -71,6 +71,50 @@ export class ParentIssuesService {
     };
   }
 
+  async getSummary(schoolId: string) {
+    const [statusRaw, priorityRaw, total] = await Promise.all([
+      this.prisma.parentIssue.groupBy({
+        by: ['status'],
+        where: { schoolId },
+        _count: { _all: true },
+      }),
+      this.prisma.parentIssue.groupBy({
+        by: ['priority'],
+        where: { schoolId },
+        _count: { _all: true },
+      }),
+      this.prisma.parentIssue.count({ where: { schoolId } }),
+    ]);
+
+    const status = Object.values(ParentIssueStatus).reduce<Record<ParentIssueStatus, number>>(
+      (acc, value) => {
+        acc[value] = 0;
+        return acc;
+      },
+      {} as Record<ParentIssueStatus, number>,
+    );
+    statusRaw.forEach((row) => {
+      status[row.status] = row._count._all;
+    });
+
+    const priority = Object.values(ParentIssuePriority).reduce<Record<ParentIssuePriority, number>>(
+      (acc, value) => {
+        acc[value] = 0;
+        return acc;
+      },
+      {} as Record<ParentIssuePriority, number>,
+    );
+    priorityRaw.forEach((row) => {
+      priority[row.priority] = row._count._all;
+    });
+
+    return {
+      total,
+      status,
+      priority,
+    };
+  }
+
   async getIssue(id: string, schoolId: string) {
     const issue = await this.prisma.parentIssue.findFirst({
       where: { id, schoolId },

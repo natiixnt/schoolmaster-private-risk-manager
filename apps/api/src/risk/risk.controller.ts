@@ -20,6 +20,11 @@ import { UserRole } from '@schoolmaster/core';
 export class RiskController {
   constructor(private readonly riskService: RiskService) {}
 
+  @Get('summary')
+  async summary(@Query('classId') classId: string | undefined, @CurrentUser() user: AuthRequestUser) {
+    return this.riskService.getRiskSummary({ schoolId: user.schoolId, classId });
+  }
+
   @Get('students')
   async list(@Query() query: RiskStudentsQueryDto, @CurrentUser() user: AuthRequestUser) {
     return this.riskService.listRiskStudents({

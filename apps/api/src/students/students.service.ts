@@ -6,17 +6,35 @@ import { StudentStatus } from '@schoolmaster/core';
 export class StudentsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async listStudentsForClass(schoolId: string, classId: string) {
-    return this.prisma.student.findMany({
+  async listStudentsForClass(schoolId: string, classId: string, includeRisk = false) {
+    const select = {
+      id: true,
+      firstName: true,
+      lastName: true,
+      externalId: true,
+      status: true,
+      riskScores: includeRisk
+        ? {
+            select: { score: true, level: true, calculatedAt: true },
+            take: 1,
+          }
+        : undefined,
+    };
+
+    const students = await this.prisma.student.findMany({
       where: { schoolId, classId },
       orderBy: { lastName: 'asc' },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        externalId: true,
-        status: true,
-      },
+      select,
+    });
+
+    if (!includeRisk) {
+      return students;
+    }
+
+    return students.map((student: any) => {
+      const [riskScore] = student.riskScores ?? [];
+      const { riskScores, ...rest } = student;
+      return { ...rest, riskScore: riskScore ?? null };
     });
   }
 

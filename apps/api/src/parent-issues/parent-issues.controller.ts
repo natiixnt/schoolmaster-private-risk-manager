@@ -35,6 +35,11 @@ export class ParentIssuesController {
     });
   }
 
+  @Get('summary')
+  summary(@CurrentUser() user: AuthRequestUser) {
+    return this.service.getSummary(user.schoolId);
+  }
+
   @Get(':id')
   getOne(@Param('id') id: string, @CurrentUser() user: AuthRequestUser) {
     return this.service.getIssue(id, user.schoolId);
