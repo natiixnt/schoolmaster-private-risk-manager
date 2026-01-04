@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { setTokens } from '../../../../lib/auth';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 const fallbackError = 'Nie udało się połączyć z serwerem. Spróbuj ponownie.';
@@ -33,8 +34,10 @@ export default function LoginPage() {
         throw new Error(body.message || 'Login failed');
       }
       const data = await res.json();
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
+      if (!data?.accessToken || !data?.refreshToken) {
+        throw new Error('Missing auth token.');
+      }
+      setTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken });
       router.push('/dev/tools');
     } catch (err: any) {
       const message = err?.message;
