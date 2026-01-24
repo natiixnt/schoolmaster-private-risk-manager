@@ -5,10 +5,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <main>
-          <h1>Schoolmaster Dev Panel</h1>
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );

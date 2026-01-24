@@ -22,13 +22,14 @@
     "format": "turbo run format"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "dotenv-cli": "^11.0.0",
     "turbo": "^2.0.3",
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "esbuild": "0.27.1",
     "@tailwindcss/postcss": "^4.1.18",
+    "esbuild": "0.27.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18"
   }

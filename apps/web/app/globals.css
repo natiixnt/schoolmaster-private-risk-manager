@@ -1,9 +1,47 @@
+
 @import "tailwindcss";
 
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 16px;
+@layer base {
+  /*
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 210 2.6% 14.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 2.6% 14.9%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --primary: 221.7 47.8% 50.4%;
+    --primary-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.7 47.8% 50.4%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 11.8%;
+    --foreground: 0 0% 100%;
+    --card: 210 4.5% 17.3%;
+    --card-foreground: 0 0% 100%;
+    --muted: 210 2.6% 14.9%;
+    --muted-foreground: 216 9.8% 80%;
+    --primary: 221.7 47.8% 50.4%;
+    --primary-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 4.9% 23.9%;
+    --input: 210 4.9% 23.9%;
+    --ring: 221.7 47.8% 50.4%;
+  }
+*/
+  body {
+    /*@apply bg-background text-foreground;*/
+    font-family: Arial, sans-serif;
+    margin: 0;
+    
+  }
 }
 
 main {
@@ -21,7 +59,143 @@ input, button, select {
 }
 
 pre {
-  background: #f3f4f6;
+  /*@apply bg-muted;*/
   padding: 12px;
   overflow: auto;
+}
+
+.schoolmaster-private {
+  --sm-color-primary-900: #2b2f8f;
+  --sm-color-primary-800: #2f3fb4;
+  --sm-color-primary-700: #3a38b8;
+  --sm-color-primary-900-90: rgba(43, 47, 143, 0.9);
+
+  --sm-color-neutral-0: #ffffff;
+  --sm-color-neutral-50: #f8fafc;
+  --sm-color-neutral-100: #f1f5f9;
+  --sm-color-neutral-200: #e2e8f0;
+  --sm-color-neutral-400: #94a3b8;
+  --sm-color-neutral-500: #64748b;
+  --sm-color-neutral-600: #475569;
+  --sm-color-neutral-700: #030f21;
+  --sm-color-neutral-800: #1e293b;
+  --sm-color-neutral-900: #0f172a;
+
+  --sm-color-ink-900: hsl(220, 67%, 29%);
+  --sm-color-ink-700: hsl(220, 65%, 40%);
+  --sm-color-ink-50: hsl(220, 70%, 95%);
+
+  --sm-color-info-50: #eef2ff;
+  --sm-color-info-100: #e0e7ff;
+  --sm-color-info-200: #c7d2fe;
+  --sm-color-info-400: #818cf8;
+  --sm-color-info-500: #6366f1;
+  --sm-color-info-600: #4f46e5;
+  --sm-color-info-700: #4338ca;
+
+  --sm-color-success-50: #ecfdf5;
+  --sm-color-success-100: #d1fae5;
+  --sm-color-success-200: #a7f3d0;
+  --sm-color-success-400: #34d399;
+  --sm-color-success-500: #10b981;
+  --sm-color-success-700: #047857;
+
+  --sm-color-warning-100: #fef3c7;
+  --sm-color-warning-400: #fbbf24;
+  --sm-color-warning-500: #f59e0b;
+  --sm-color-warning-700: #b45309;
+
+  --sm-color-danger-100: #fee2e2;
+  --sm-color-danger-500: #ef4444;
+  --sm-color-danger-700: #b91c1c;
+
+  --sm-color-negative-500: #f43f5e;
+
+  --sm-color-white-90: rgba(255, 255, 255, 0.9);
+  --sm-color-white-85: rgba(255, 255, 255, 0.85);
+  --sm-color-white-80: rgba(255, 255, 255, 0.8);
+  --sm-color-white-75: rgba(255, 255, 255, 0.75);
+  --sm-color-white-70: rgba(255, 255, 255, 0.7);
+  --sm-color-white-60: rgba(255, 255, 255, 0.6);
+  --sm-color-white-50: rgba(255, 255, 255, 0.5);
+  --sm-color-white-20: rgba(255, 255, 255, 0.2);
+  --sm-color-white-15: rgba(255, 255, 255, 0.15);
+  --sm-color-white-10: rgba(255, 255, 255, 0.1);
+
+  --sm-color-background: var(--sm-color-neutral-50);
+  --sm-color-surface: var(--sm-color-neutral-0);
+  --sm-color-surface-muted: var(--sm-color-neutral-100);
+  --sm-color-border: var(--sm-color-neutral-200);
+  --sm-color-border-subtle: var(--sm-color-neutral-100);
+  --sm-color-text-primary: var(--sm-color-ink-900);
+  --sm-color-text-muted: var(--sm-color-neutral-500);
+  --sm-color-on-primary: var(--sm-color-neutral-0);
+
+  --sm-gradient-hero: linear-gradient(
+    90deg,
+    var(--sm-color-primary-900) 0%,
+    var(--sm-color-primary-700) 50%,
+    var(--sm-color-primary-800) 100%
+  );
+  --sm-gradient-card: linear-gradient(
+    135deg,
+    var(--sm-color-neutral-50) 0%,
+    var(--sm-color-neutral-0) 100%
+  );
+
+  --sm-font-family-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --sm-font-size-3xs: 0.625rem;
+  --sm-font-size-2xs: 0.6875rem;
+  --sm-font-size-xs: 0.75rem;
+  --sm-font-size-sm: 0.875rem;
+  --sm-font-size-md: 1rem;
+  --sm-font-size-lg: 1.125rem;
+  --sm-font-size-xl: 1.25rem;
+  --sm-font-size-2xl: 1.5rem;
+  --sm-font-size-3xl: 1.875rem;
+  --sm-font-size-4xl: 2.25rem;
+  --sm-font-size-5xl: 3rem;
+
+  --sm-line-height-tight: 1.25;
+  --sm-line-height-relaxed: 1.625;
+
+  --sm-font-weight-medium: 500;
+  --sm-font-weight-semibold: 600;
+  --sm-font-weight-bold: 700;
+
+  --sm-radius-sm: 0.75rem;
+  --sm-radius-md: 1rem;
+  --sm-radius-lg: 1.5rem;
+  --sm-radius-full: 9999px;
+
+  --sm-shadow-1: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --sm-shadow-2: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --sm-space-1: 0.5rem;
+  --sm-space-2: 1rem;
+  --sm-space-3: 1.5rem;
+  --sm-space-4: 2rem;
+  --sm-space-5: 2.5rem;
+  --sm-space-6: 3rem;
+  --sm-space-7: 4rem;
+  --sm-space-legacy-12: 0.75rem;
+  --sm-space-legacy-20: 1.25rem;
+}
+
+.schoolmaster-private .sm-bg-hero {
+  background: var(--sm-gradient-hero);
+}
+
+.schoolmaster-private .sm-bg-card-gradient {
+  background: var(--sm-gradient-card);
+}
+
+.schoolmaster-private .sm-shadow-1 {
+  box-shadow: var(--sm-shadow-1);
+}
+
+.schoolmaster-private .sm-shadow-2 {
+  box-shadow: var(--sm-shadow-2);
 }

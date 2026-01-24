@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+//import ThemeToggle from '../../../components/ThemeToggle';
+import { authFetch, getAccessToken, getRefreshToken } from '../../../lib/auth';
 
 type ClassItem = {
   id: string;
@@ -45,29 +45,21 @@ export default function DevToolsPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const syncTokens = () => {
+    setAccessToken(getAccessToken());
+    setRefreshToken(getRefreshToken());
+  };
+
   useEffect(() => {
-    const storedAccess = localStorage.getItem('accessToken');
-    const storedRefresh = localStorage.getItem('refreshToken');
-    setAccessToken(storedAccess);
-    setRefreshToken(storedRefresh);
+    syncTokens();
   }, []);
 
   const authedFetch = async (path: string, options?: RequestInit) => {
-    if (!accessToken) {
-      throw new Error('No access token. Please login first.');
+    try {
+      return await authFetch(path, options);
+    } finally {
+      syncTokens();
     }
-    const res = await fetch(`${apiUrl}${path}`, {
-      ...options,
-      headers: {
-        ...(options?.headers || {}),
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error(body.message || `Request failed (${res.status})`);
-    }
-    return res.json();
   };
 
   const loadClasses = async () => {
@@ -131,27 +123,15 @@ export default function DevToolsPage() {
       setError('Select a CSV first');
       return;
     }
-    if (!accessToken) {
-      setError('No access token. Login first.');
-      return;
-    }
     try {
       setLoading(true);
       setError(null);
       const formData = new FormData();
       formData.append('file', file);
-      const res = await fetch(`${apiUrl}/import/students`, {
+      const data = (await authedFetch('/import/students', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken ?? ''}`,
-        },
         body: formData,
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || 'Upload failed');
-      }
-      const data = (await res.json()) as ImportResult;
+      })) as ImportResult;
       setImportResult(data);
     } catch (err: any) {
       setError(err?.message ?? 'Upload error');
@@ -162,13 +142,16 @@ export default function DevToolsPage() {
 
   return (
     <div>
+      <div className="mb-4">
+        <ThemeToggle />
+      </div>
       <p>
         Tokens: access {accessToken ? 'loaded' : 'missing'} / refresh{' '}
         {refreshToken ? 'loaded' : 'missing'} |{' '}
         {!accessToken && <a href="/auth/login">Go to login</a>}
       </p>
       {!accessToken && <p>Not logged in. Please <a href="/auth/login">login</a> to use tools.</p>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {error && <div className="text-destructive">{error}</div>}
 
       <section>
         <h2>Upload students CSV</h2>
