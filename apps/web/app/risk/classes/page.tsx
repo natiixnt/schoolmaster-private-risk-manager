@@ -167,7 +167,7 @@ export default function ClassesListPage() {
                     value={query} 
                     onChange={(e) => setQuery(e.target.value)} 
                     placeholder="Szukaj klasy..." 
-                    className="w-full bg-slate-50 text-[var(--sm-color-text-primary)] font-semibold rounded-[var(--sm-radius-sm)] py-2.5 pl-10 pr-4 border-none focus:ring-1 focus:ring-inset focus:ring-[var(--sm-color-info-600)] placeholder:text-slate-400" 
+                    className="w-full bg-slate-50 text-[var(--sm-color-text-primary)] font-[var(--sm-font-weight-semibold)] rounded-[var(--sm-radius-sm)] py-2.5 pl-10 pr-4 border-none focus:ring-1 focus:ring-inset focus:ring-[var(--sm-color-info-600)] placeholder:text-slate-400" 
                     />
                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-blue-400">
                     </div>
@@ -177,8 +177,8 @@ export default function ClassesListPage() {
 
         {/* --- OBSŁUGA BŁĘDÓW API --- */}
         {error && (
-            <div className="p-4 rounded-xl bg-red-50 text-red-700 border border-red-200 text-sm font-medium flex items-center gap-3">
-                 <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <div className="p-4 rounded-xl bg-red-50 text-[var(--sm-color-danger-700)] border border-red-200 text-sm font-medium flex items-center gap-3">
+                 <svg className="w-5 h-5 text-[var(--sm-color-danger-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                  Wystąpił błąd podczas pobierania danych: {error}
             </div>
         )}

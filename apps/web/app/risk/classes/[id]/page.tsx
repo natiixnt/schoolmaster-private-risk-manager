@@ -165,7 +165,7 @@ export default function ClassDetailsList() {
                     <tr key={student.id} className="group hover:bg-blue-50/50 transition-all duration-300">
                       <td className="px-10 py-6">
                         <div className="flex items-center gap-5">
-                          {/* Avatar z numerem lub inicjałami w brand blue */}
+                          
                           <div className="w-12 h-12 rounded-[var(--sm-radius-md)] bg-blue-50 border border-blue-100 flex items-center justify-center text-sm font-[var(--sm-font-weight-bold)] text-[var(--sm-color-info-600)]  group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
                             {student.firstName[0]}{student.lastName[0]}
                           </div>
@@ -188,16 +188,16 @@ export default function ClassDetailsList() {
                           {student.status === 'ACTIVE' ? 'Aktywny' : 'Nieaktywny'}
                         </span>
                       </td>
-                      <td className="px-10 py-6 text-right">
+                      <td className="px-10 py-6 text-center ">
                         <Link
                           href={`/risk/students/${student.id}`}
                           
                         >
-                        <button className="flex items-center text-center justify-center w-full cursor-pointer  py-10 rounded-[var(--sm-radius-sm)] bg-[var(--sm-color-primary-900)] text-white text-md font-[var(--sm-font-weight-bold)] hover:bg-[var(--sm-color-primary-900-90)] hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"> 
+                        <button className="flex items-center  relative justify-center w-full cursor-pointer  py-5 rounded-[var(--sm-radius-sm)] bg-[var(--sm-color-primary-900)] text-white text-md font-[var(--sm-font-weight-bold)] hover:bg-[var(--sm-color-primary-900-90)] hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"> 
                         
-                         <span className='mr-3'>Karta ucznia</span> 
-                          <svg className="w-4 h-4 " fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path d="M9 5l7 7-7 7" /></svg>
-                        
+                         <span className='text-center'>Karta ucznia</span> 
+                          
+                        <svg className=" h-4 w-4 right-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path d="M9 5l7 7-7 7" /></svg>
                         </button>
                         </Link>
                       </td>

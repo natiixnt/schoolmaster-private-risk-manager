@@ -41,29 +41,29 @@ export default function RiskStudentsCompactPage() {
   );
 
   if (loading) return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center schoolmaster-private">
-      <div className="flex flex-col items-center gap-4 text-[#5F5AFC]">
+    <div className="min-h-screen bg-[var(--sm-color-background)] flex items-center justify-center schoolmaster-private">
+      <div className="flex flex-col items-center gap-4 text-[var(--sm-color-info-600)]">
         <div className="w-10 h-10 border-4 border-current border-t-transparent rounded-full animate-spin"></div>
-        <p className="font-black uppercase text-[10px] tracking-[0.3em]">Trwa analiza ryzyka...</p>
+        <p className="font-[var(--sm-font-weight-bold)] uppercase text-sm tracking-[0.3em]">Trwa analiza ryzyka...</p>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 lg:p-12 font-sans schoolmaster-private">
+    <div className="min-h-screen bg-[var(--sm-color-background)] p-6 lg:p-12 font-sans schoolmaster-private">
       
       <div className="mx-auto max-w-7xl">
         <div>
           <button 
               onClick={() => router.back()}
-              className="px-4 py-2 rounded-[var(--sm-radius-sm)] cursor-pointer bg-white border border-slate-200 text-xs font-[var(--sm-font-weight-bold)] text-[var(--sm-color-neutral-500)] hover:text-[var(--sm-color-info-600)] hover:border-blue-200 uppercase tracking-widest flex items-center gap-2 transition-all hover:shadow-2xl active:scale-95"
+              className="px-4 py-2 rounded-[var(--sm-radius-sm)] cursor-pointer bg-white border border-slate-200 text-md font-[var(--sm-font-weight-bold)] text-[var(--sm-color-neutral-500)] hover:text-[var(--sm-color-info-600)] hover:border-blue-200 uppercase tracking-widest flex items-center gap-2 transition-all hover:shadow-2xl active:scale-95"
             >
               <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3.5"><path d="M15 19l-7-7 7-7" /></svg>
               Wróć
             </button>
             </div>
         {/* --- HEADER: PROFESJONALNY GRANAT & NIEBIESKI --- */}
-        <div className="sm-bg-hero rounded-[var(--sm-radius-lg)]  shadow-2xl shadow-[var(--sm-color-info-600)]/30 border-b-8 border-white/10 relative overflow-hidden">
+        <div className="sm-bg-hero rounded-[var(--sm-radius-lg)]  shadow-2xl shadow-[var(--sm-color-info-600)]/30 mb-6 border-b-8 border-white/10 relative overflow-hidden">
             <div className="absolute inset-0 sm-bg-hero "></div>
 
             <div className="relative z-10 px-8 py-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -102,38 +102,36 @@ export default function RiskStudentsCompactPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-50 bg-slate-50/50">
-                  <th className="px-8 py-6 text-[11px] font-black text-slate-400 uppercase tracking-widest">Uczeń i Oddział</th>
-                  <th className="px-6 py-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Score</th>
-                  <th className="px-8 py-6 text-[11px] font-black text-slate-400 uppercase tracking-widest">Analiza Wskaźników</th>
-                  <th className="px-8 py-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Raport</th>
+                <tr className="bg-blue-50/30 text-sm  text-[var(--sm-color-neutral-500)]">
+                  <th className="px-10 py-5 font-[var(--sm-font-weight-bold)] uppercase tracking-[0.2em] opacity-80">Uczeń i Oddział</th>
+                  <th className="px-10 py-5 font-[var(--sm-font-weight-bold)] uppercase tracking-[0.2em] opacity-80 text-center">Score</th>
+                  <th className="px-10 py-5 font-[var(--sm-font-weight-bold)] uppercase tracking-[0.2em] opacity-80">Analiza Wskaźników</th>
+                  <th className="px-10 py-5 font-[var(--sm-font-weight-bold)] uppercase tracking-[0.2em] opacity-80 text-right">Raport</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {filtered.map((s) => (
-                  <tr key={s.studentId} className="group hover:bg-[#5F5AFC]/[0.02] transition-colors">
+                  <tr key={s.studentId} className="group hover:bg-[var(--sm-color-info-600)]/[0.02] transition-colors">
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xs font-black border-2 transition-all ${
-                          s.level === 'RED' ? 'bg-red-50 border-red-100 text-[var(--sm-color-danger-500)]' : 'bg-blue-50 border-blue-100 text-[#5F5AFC]'
-                        }`}>
-                          {s.firstName[0]}{s.lastName[0]}
-                        </div>
+                        <div className="w-12 h-12 rounded-[var(--sm-radius-md)] bg-blue-50 border border-blue-100 flex items-center justify-center text-sm font-[var(--sm-font-weight-bold)] text-[var(--sm-color-info-600)]  group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
+                            {s.firstName[0]}{s.lastName[0]}
+                          </div>
                         <div>
-                          <div className="font-bold text-slate-900 text-base tracking-tight">{s.lastName} {s.firstName}</div>
-                          <div className="text-[10px] font-black text-[#5F5AFC] uppercase tracking-widest mt-0.5">Oddział {s.class.name}</div>
+                          <div className="text-lg font-[var(--sm-font-weight-bold)] text-[var(--sm-color-text-primary)] uppercase tracking-tight  transition-colors">{s.lastName} {s.firstName}</div>
+                          <div className="text-md font-[var(--sm-font-weight-bold)] text-[var(--sm-color-info-600)] uppercase tracking-widest mt-0.5">Oddział {s.class.name}</div>
                         </div>
                       </div>
                     </td>
 
                     <td className="px-6 py-6">
                       <div className="flex flex-col items-center">
-                        <span className={`text-xl font-black ${s.level === 'RED' ? 'text-[var(--sm-color-danger-500)]' : 'text-slate-700'}`}>
+                        <span className={`text-xl font-[var(--sm-font-weight-bold)] ${s.level === 'RED' ? 'text-[var(--sm-color-danger-500)]' : 'text-slate-700'}`}>
                           {s.score}
                         </span>
                         <div className="w-12 h-1 bg-slate-100 rounded-[var(--sm-radius-full)] mt-1.5 overflow-hidden">
                           <div 
-                            className={`h-full transition-all duration-700 ${s.level === 'RED' ? 'bg-red-500' : 'bg-[#5F5AFC]'}`}
+                            className={`h-full transition-all duration-700 ${s.level === 'RED' ? 'bg-[var(--sm-color-negative-500)]' : 'bg-[var(--sm-color-info-600)]'}`}
                             style={{ width: `${s.score}%` }}
                           />
                         </div>
@@ -144,22 +142,22 @@ export default function RiskStudentsCompactPage() {
                       <div className="flex gap-4">
                         
                           <div  className="flex flex-col">
-                            <span className="text-xs font-black text-slate-300 uppercase tracking-tighter mb-1">Zmiana średniej ocen</span>
-                            <div className={`text-xs font-bold ${s.indicators[0].level === 'RED' ? 'text-[var(--sm-color-danger-500)]' : 'text-slate-600'}`}>
+                            <span className="text-md font-[var(--sm-font-weight-bold)] opacity-80 text-[var(--sm-color-neutral-500)] uppercase tracking-tighter mb-1 mr-5">Zmiana średniej ocen</span>
+                            <div className={`text-md font-[var(--sm-font-weight-bold)] ${s.indicators[0].level === 'RED' ? 'text-[var(--sm-color-danger-500)]' : 'text-[var(--sm-color-neutral-500)]'}`}>
                             {Number(s.indicators[0].value).toFixed(1)}
                             </div>
                           </div>
 
                           <div  className="flex flex-col">
-                            <span className="text-xs font-black text-slate-300 uppercase tracking-tighter mb-1">Frekwencja</span>
-                            <div className={`text-xs font-bold ${s.indicators[1].level === 'RED' ? 'text-[var(--sm-color-danger-500)]' : 'text-slate-600'}`}>
+                            <span className="text-md font-[var(--sm-font-weight-bold)] opacity-80 text-[var(--sm-color-neutral-500)] uppercase tracking-tighter mb-1 mr-5">Frekwencja</span>
+                            <div className={`text-md font-[var(--sm-font-weight-bold)] ${s.indicators[1].level === 'RED' ? 'text-[var(--sm-color-danger-500)]' : 'text-[var(--sm-color-neutral-500)]'}`}>
                               {`${Math.round(s.indicators[1].value * 100)}%` }
                             </div>
                           </div>
 
                           <div  className="flex flex-col">
-                            <span className="text-xs font-black text-slate-300 uppercase tracking-tighter mb-1">Liczba negatywnych zdarzeń</span>
-                            <div className={`text-xs font-bold ${s.indicators[2].level === 'RED' ? 'text-[var(--sm-color-danger-500)]' : 'text-slate-600'}`}>
+                            <span className="text-md font-[var(--sm-font-weight-bold)] opacity-80 text-[var(--sm-color-neutral-500)] uppercase tracking-tighter mb-1">Liczba negatywnych zdarzeń</span>
+                            <div className={`text-md font-[var(--sm-font-weight-bold)] ${s.indicators[2].level === 'RED' ? 'text-[var(--sm-color-danger-500)]' : 'text-[var(--sm-color-neutral-500)]'}`}>
                               {s.indicators[2].value.negativeCount }
                             </div>
                           </div>
@@ -167,13 +165,15 @@ export default function RiskStudentsCompactPage() {
                       </div>
                     </td>
 
-                    <td className="px-8 py-6 text-right">
-                      <Link 
-                        href={`/risk/students/${s.studentId}`}
-                        className="inline-flex items-center gap-2 bg-[#F1F5F9] text-[#475569] px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5F5AFC] hover:text-white transition-all active:scale-95"
-                      >
-                        Detale
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path d="M9 5l7 7-7 7" /></svg>
+                    <td className="px-10 py-6 text-center ">
+                       <Link 
+                        href={`/risk/students/${s.studentId}`}>
+                       <button className="flex items-center  relative justify-center w-full cursor-pointer  py-5 rounded-[var(--sm-radius-sm)] bg-[var(--sm-color-primary-900)] text-white text-md font-[var(--sm-font-weight-bold)] hover:bg-[var(--sm-color-primary-900-90)] hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"> 
+                     
+                        <span className='text-center'>Detale</span>
+                        <svg className="h-4 w-4 right-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3"><path d="M9 5l7 7-7 7" /></svg>
+                      
+                      </button>
                       </Link>
                     </td>
                   </tr>
@@ -187,12 +187,12 @@ export default function RiskStudentsCompactPage() {
         <div className="mt-10 flex flex-col md:flex-row justify-between items-center px-4 gap-6">
            <div className="flex items-center gap-8">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-red-500" />
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Krytyczne: {students.filter(s => s.level === 'RED').length}</span>
+                <div className="w-2 h-2 rounded-[var(--sm-radius-full)] bg-red-500" />
+                <span className="text-sm font-[var(--sm-font-weight-bold)] text-slate-400 uppercase tracking-widest">Krytyczne: {students.filter(s => s.level === 'RED').length}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#5F5AFC]" />
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">W normie: {students.filter(s => s.level === 'GREEN').length}</span>
+                <div className="w-2 h-2 rounded-full bg-[var(--sm-color-info-600)]" />
+                <span className="text-sm font-[var(--sm-font-weight-bold)] text-slate-400 uppercase tracking-widest">W normie: {students.filter(s => s.level === 'GREEN').length}</span>
               </div>
            </div>
            
