@@ -54,7 +54,7 @@ section {
 }
 
 input, button, select {
-  margin: 4px 0;
+  margin: 4px 15px;
   padding: 8px;
 }
 
