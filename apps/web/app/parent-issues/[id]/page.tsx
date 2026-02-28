@@ -51,18 +51,18 @@ export default function IssueDetailsPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-      <div className="text-[#5F5AFC] font-black animate-pulse uppercase tracking-widest text-xs">Wczytywanie...</div>
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center schoolmaster-private">
+      <div className="text-[var(--sm-color-info-600)] font-black animate-pulse uppercase tracking-widest text-xs">Wczytywanie...</div>
     </div>
   );
 
-  if (error || !issue) return <div className="p-20 text-center text-red-500 font-bold">Błąd: {error || 'Nie znaleziono zgłoszenia'}</div>;
+  if (error || !issue) return <div className=" schoolmaster-private p-20 text-center text-red-500 font-bold">Błąd: {error || 'Nie znaleziono zgłoszenia'}</div>;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans pb-20">
+    <div className="min-h-screen schoolmaster-private bg-[var(--sm-color-background)] text-slate-900 font-sans pb-20">
       
       {/* --- HEADER: DEEP NAVY (z obrazka) --- */}
-      <div className="bg-[#1e293b] pt-16 pb-32 px-8 lg:px-16 relative overflow-hidden">
+      {/*<div className="bg-[#1e293b] pt-16 pb-32 px-8 lg:px-16 relative overflow-hidden">
         <div className="mx-auto max-w-7xl relative z-10">
           <button 
             onClick={() => router.back()} 
@@ -89,17 +89,72 @@ export default function IssueDetailsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div>*/}
+ <div className="mx-auto max-w-7xl">
+          <div>
+            <button
+              onClick={() => router.back()}
+              className="px-4 py-2 rounded-[var(--sm-radius-sm)] cursor-pointer bg-white border border-slate-200 text-md font-[var(--sm-font-weight-bold)] text-[var(--sm-color-neutral-500)] hover:text-[var(--sm-color-info-600)] hover:border-blue-200 uppercase tracking-widest flex items-center gap-2 transition-all hover:sm-shadow-2 active:scale-95"
+            >
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3.5"><path d="M15 19l-7-7 7-7" /></svg>
+              Wróć
+            </button>
+          </div>
+          {/* --- HEADER: PROFESJONALNY GRANAT & NIEBIESKI --- */}
+          <div className="sm-bg-hero rounded-[var(--sm-radius-lg)]  sm-shadow-2 shadow-[var(--sm-color-info-600)]/30 mb-6 border-b-8 border-white/10 relative overflow-hidden">
+            <div className="absolute inset-0 sm-bg-hero "></div>
 
-      {/* --- CONTENT SECTION --- */}
+            <div className="relative z-10 px-8 py-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="absolute top-0 left-0 md:translate-x-5 md:translate-y-0 w-full h-full opacity-10 overflow-hidden pointer-events-none">
+                <svg viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="none" stroke="currentColor" strokeWidth="40">
+                    <circle r="105" cx="450" cy="400" className="text-white" />
+                    <circle r="150" cx="900" cy="540" className="text-white" />
+                    <circle r="120" cx="550" cy="50" className="text-white" />
+                  </g>
+                </svg>
+              </div>
+              <div className="space-y-3">
+                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--sm-color-on-primary)]">
+                  Centrum Zgłoszeń
+                </h1>
+                <p className="text-[var(--sm-color-neutral-100)] text-lg max-w-xl font-[var(--sm-font-weight-medium)]">
+                  Zarządzaj komunikacją i rozwiązuj problemy zgłoszone przez opiekunów.
+                </p>
+              </div>
+
+              <div className="flex items-center flex-col sm:flex-row gap-6 bg-white/5  backdrop-blur-md p-6 rounded-[var(--sm-radius-lg)] border border-white/10 shadow-2xl">
+                <div className="text-center w-1/4 md:w-auto">
+                  <p className="text-xs font-black uppercase text-[var(--sm-color-info-400)] tracking-widest">Wszystkich</p>
+                  <p className="text-2xl font-black text-[var(--sm-color-surface)]"></p>
+                </div>
+                <div className="md:w-px h-10 bg-white/10" />
+                <div className="text-center w-1/4 md:w-auto">
+                  <p className="text-xs font-black uppercase text-[var(--sm-color-negative-500)] tracking-widest">Krytyczne</p>
+                  <p className="text-2xl font-black text-[var(--sm-color-surface)]"></p>
+                </div>
+                <div className="md:w-px h-10 bg-white/10"  />
+
+
+                <button className="bg-white hover:bg-indigo-50 text-[var(--sm-color-text-primary)] cursor-pointer w-auto h-12 flex items-center justify-center rounded-[var(--sm-radius-sm)] transition-all sm-shadow-1 active:scale-95">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      
       <div className="mx-auto max-w-7xl px-8 lg:px-16 -mt-16 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
-          {/* LEFT COLUMN: DESCRIPTION & COMMENTS */}
+         
           <div className="lg:col-span-8 space-y-10">
             
-            {/* Main Description Card */}
-            <div className="bg-white rounded-[2rem] p-10 shadow-xl border-2 border-transparent">
+           
+        {/*     <div className="bg-white rounded-[2rem] p-10 shadow-xl border-2 border-transparent">
                <div className="flex items-center gap-3 mb-6">
                  <div className="w-1.5 h-6 bg-[#5F5AFC] rounded-full" />
                  <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Opis zgłoszenia</h3>
@@ -108,8 +163,8 @@ export default function IssueDetailsPage() {
                  {issue.description}
                </p>
             </div>
-
-            {/* Timeline / Comments */}
+    */}
+           
             <div className="space-y-6">
                <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest px-4">Historia komunikacji ({issue.comments.length})</h3>
                
@@ -131,7 +186,7 @@ export default function IssueDetailsPage() {
                     </div>
                   ))}
 
-                  {/* Input Card (The "Blue" Style) */}
+                  
                   <div className="bg-white border-2 border-slate-100 rounded-[2.5rem] p-8 shadow-sm">
                     <div className="flex items-center gap-4 mb-6">
                         <div className="w-12 h-12 bg-[#5F5AFC] rounded-full flex items-center justify-center text-xs font-black text-white">
@@ -154,7 +209,7 @@ export default function IssueDetailsPage() {
                </div>
             </div>
           </div>
-
+   
           {/* RIGHT COLUMN: SIDEBAR */}
           <div className="lg:col-span-4 space-y-8">
             <div className="bg-white rounded-[2.5rem] p-10 shadow-xl border border-slate-50 relative overflow-hidden">
@@ -204,21 +259,8 @@ export default function IssueDetailsPage() {
               </div>
             </div>
 
-            {/* AI Insight Card (Modern Gradient) */}
-            <div className="bg-gradient-to-br from-[#1e293b] to-[#0f172a] rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden group">
-               <div className="relative z-10">
-                 <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-white/10 rounded-lg">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" strokeWidth="2.5" /></svg>
-                    </div>
-                    <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-blue-400">System AI Insight</h4>
-                 </div>
-                 <p className="text-sm font-bold leading-relaxed text-blue-50 italic">
-                   "Kategoria <span className="underline decoration-blue-500 uppercase">{issue.category}</span> wymaga weryfikacji dokumentacji medycznej przed udzieleniem odpowiedzi."
-                 </p>
-               </div>
-               <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl group-hover:scale-125 transition-all duration-700" />
-            </div>
+            
+            
           </div>
 
         </div>

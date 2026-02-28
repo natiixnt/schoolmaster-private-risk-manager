@@ -24,17 +24,17 @@ interface ApiResponse {
 
 export default function ParentIssuesPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [issues, setIssues] = useState<ParentIssue[]>([]);
   const [filterStatus, setFilterStatus] = useState('all');
   const [error, setError] = useState<string | null>(null);
-  const [isShowed, changeIsShowed] = useState<boolean>(false);
+  const [isOverlayShowed, changeIsOverlayShowed] = useState<boolean>(false);
  
-  const [addedTitle, changeAddedTitle] = useState<string>("")
-  const [addedName, changeAddedName] = useState<string>("")
-  const [addedSurname, changeAddedSurname] = useState<string>("")
-  const [addedPriority, changeAddedPriority] = useState<'LOW' | 'MEDIUM' | 'HIGH'>("LOW")
-  const [addedIssue, setAddedIssues] = useState<ParentIssue>({});
+  const [addedTitle, setAddedTitle] = useState<string>("")
+  const [addedName, setAddedName] = useState<string>("")
+  const [addedSurname, setAddedSurname] = useState<string>("")
+  const [addedPriority, setAddedPriority] = useState<string>("LOW")
+  const [addedLoading, setAddedLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchIssues = async () => {
@@ -61,6 +61,20 @@ export default function ParentIssuesPage() {
     return labels[s as keyof typeof labels] || s;
   };
 
+   async function sendData(e:React.FormEvent<HTMLFormElement>){
+    e.preventDefault()
+    setAddedLoading(true)
+    const body = { addedTitle, addedName, addedSurname, addedPriority}
+
+    await authFetch<ApiResponse>("/parent-issue", {
+      method: "POST",
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    }).then((body) =>{
+      console.log(`wysłano: ${body}`)
+      setAddedLoading(false)
+    })
+  }
 
 
   // Funkcja do koloru kropki na podstawie priority
@@ -73,7 +87,7 @@ export default function ParentIssuesPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-[var(--sm-color-background)] ${isShowed ? "" : "p-6 lg:p-12"}  schoolmaster-private`}>
+    <div className={`min-h-screen bg-[var(--sm-color-background)] ${isOverlayShowed ? "" : "p-6 lg:p-12"}  schoolmaster-private`}>
 
 
 
@@ -139,61 +153,60 @@ export default function ParentIssuesPage() {
 
 
 
-      {isShowed && <div className={`w-full h-full  fixed z-50 backdrop-blur-2xl  flex justify-center items-center`}>
-        <div className='absolute z-55 w-1/4 h-1/2 rounded-[var(--sm-radius-lg)] bg-[var(--sm-color-surface-muted)] sm-shadow-2 pt-20 flex flex-col items-center '>
+      {isOverlayShowed && <div className={`w-full h-full  fixed z-50 backdrop-blur-2xl  flex justify-center items-center`}>
+        <div className='absolute z-55 w-1/4  h-auto lg:h-1/2 rounded-[var(--sm-radius-lg)] bg-[var(--sm-color-surface-muted)] sm-shadow-2 pt-20 flex flex-col items-center '>
 
           <div className='absolute top-0 left-2'>
             <button
-              onClick={() => changeIsShowed(false)}
+              onClick={() => changeIsOverlayShowed(false)}
               className="px-4 py-2 rounded-[var(--sm-radius-sm)] cursor-pointer bg-white border border-slate-200 text-md font-[var(--sm-font-weight-bold)] text-[var(--sm-color-neutral-500)] hover:text-[var(--sm-color-info-600)] hover:border-blue-200 uppercase tracking-widest flex items-center gap-2 transition-all hover:shadow-2xl active:scale-95"
             >
               <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3.5"><path d="M15 19l-7-7 7-7" /></svg>
               Wróć
             </button>
           </div>
+          <form onSubmit={sendData} className='flex flex-col justify-around h-full items-center'>
           <div className='flex items-center flex-col mb-5 '>
-            <label className='block w-auto text-md font-black uppercase text-xs tracking-[0.1em] text-[var(--sm-color-text-primary)] text-center lg:text-left lg:text-lg '>Wpisz Tytuł</label>
-            <input onChange={(e) => (changeAddedTitle(e.target.value))} value={addedTitle} className='mb-2 w-3/4 p-5 border-2 rounded-[var(--sm-radius-md)] font-[var(--sm-font-weight-semibold)] lg:w-3/4' type="text" placeholder='Wpisz Tytuł ' required />
+            
+            <label className='block w-auto  font-black uppercase  tracking-[0.1em] text-[var(--sm-color-text-primary)] text-left text-lg '>Wpisz Tytuł</label>
+            <input onChange={(e) => (setAddedTitle(e.target.value))} value={addedTitle} className='mb-2 w-3/4 p-5 border-2 rounded-[var(--sm-radius-md)] font-[var(--sm-font-weight-semibold)] ' type="text" placeholder='Wpisz Tytuł ' required />
 
-            <label className='block w-auto text-md font-black uppercase text-xs tracking-[0.1em] text-[var(--sm-color-text-primary)] text-center lg:text-left lg:text-lg '>Wpisz Imię</label>
-            <input onChange={(e) => (changeAddedName(e.target.value))} value={addedName} className='mb-2 w-3/4 p-5 border-2 rounded-[var(--sm-radius-md)] font-[var(--sm-font-weight-semibold)] lg:w-3/4' type="text" placeholder='Wpisz Imię ' required />
+            <label className='block w-auto  font-black uppercase  tracking-[0.1em] text-[var(--sm-color-text-primary)] text-left text-lg'>Wpisz Imię</label>
+            <input onChange={(e) => (setAddedName(e.target.value))} value={addedName} className='mb-2 w-3/4 p-5 border-2 rounded-[var(--sm-radius-md)] font-[var(--sm-font-weight-semibold)] ' type="text" placeholder='Wpisz Imię ' required />
 
-            <label className='block w-auto   text-md font-black uppercase text-xs tracking-[0.1em] text-[var(--sm-color-text-primary)] lg:text-lg'>Wpisz Nazwisko</label>
-            <input onChange={(e) => (changeAddedSurname(e.target.value))} value={addedSurname} type="text" className='mb-2 w-3/4 px-15 border-2 rounded-[var(--sm-radius-md)] font-[var(--sm-font-weight-semibold)] rounded-[var(--sm-radius-md)] lg:w-3/4 ' placeholder='Wpisz Nazwisko' required />
+            <label className='block w-auto  font-black uppercase  tracking-[0.1em] text-[var(--sm-color-text-primary)] text-left text-lg'>Wpisz Nazwisko</label>
+            <input onChange={(e) => (setAddedSurname(e.target.value))} value={addedSurname} type="text" className='mb-2 w-3/4 px-15 border-2 rounded-[var(--sm-radius-md)] font-[var(--sm-font-weight-semibold)] rounded-[var(--sm-radius-md)]  ' placeholder='Wpisz Nazwisko' required />
 
-            <label className='block text-md w-1/2  font-black uppercase text-xs tracking-[0.1em] text-[var(--sm-color-text-primary)] lg:text-lg'>Ustal Priorytet</label>
-            <select onChange={(e) => (changeAddedPriority(e.target.value))} value={addedPriority} className='border-2 p-5 w-1/2 uppercase cursor-pointer rounded-[var(--sm-radius-md)]' required >
-              <option value='LOW' >Niski</option>
-              <option value='MEDIUM' >Średni</option>
-              <option value='HIGH'>Wysoki</option>
+            <label className='block w-auto  font-black uppercase  tracking-[0.1em] text-[var(--sm-color-text-primary)] text-left text-lg'>Ustal Priorytet</label>
+            <select onChange={(e) => (setAddedPriority(e.target.value))} value={addedPriority} className='border-2 p-5 w-1/2 uppercase cursor-pointer rounded-[var(--sm-radius-md)]' required >
+              <option value="LOW" >Niski</option>
+              <option value="MEDIUM" >Średni</option>
+              <option value="HIGH">Wysoki</option>
             </select>
+            
+            
+
+            
           </div>
-          <button onClick={() => {
-
-             async function sendData() {
-
-             }
-             sendData()
-
-          }} 
-          className='flex mt-15 justify-center cursor-pointer w-auto lg:w-1/2  rounded-md bg-[var(--sm-color-primary-900)] rounded-[var(--sm-radius-md)] p-15 uppercase text-sm font-semibold text-white sm-shadow-1 hover:bg-[var(--sm-color-primary-900-90)]'>Dodaj</button>
+          <input type='submit' value="Dodaj" className='flex mt-15 justify-center cursor-pointer w-1/2 h-auto  rounded-md bg-[var(--sm-color-primary-900)] rounded-[var(--sm-radius-md)] p-15 uppercase text-sm font-semibold text-white sm-shadow-1 hover:bg-[var(--sm-color-primary-900-90)]'/>
+          </form>
 
         </div>
       </div>}
 
-      <div className={`${isShowed ? "pointer-events-none" : "pointer-events-auto"}`}>
+      <div className={`${isOverlayShowed ? "pointer-events-none" : "pointer-events-auto"}`}>
         <div className="mx-auto max-w-7xl">
           <div>
             <button
               onClick={() => router.back()}
-              className="px-4 py-2 rounded-[var(--sm-radius-sm)] cursor-pointer bg-white border border-slate-200 text-md font-[var(--sm-font-weight-bold)] text-[var(--sm-color-neutral-500)] hover:text-[var(--sm-color-info-600)] hover:border-blue-200 uppercase tracking-widest flex items-center gap-2 transition-all hover:shadow-2xl active:scale-95"
+              className="px-4 py-2 rounded-[var(--sm-radius-sm)] cursor-pointer bg-white border border-slate-200 text-md font-[var(--sm-font-weight-bold)] text-[var(--sm-color-neutral-500)] hover:text-[var(--sm-color-info-600)] hover:border-blue-200 uppercase tracking-widest flex items-center gap-2 transition-all hover:sm-shadow-2 active:scale-95"
             >
               <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3.5"><path d="M15 19l-7-7 7-7" /></svg>
               Wróć
             </button>
           </div>
           {/* --- HEADER: PROFESJONALNY GRANAT & NIEBIESKI --- */}
-          <div className="sm-bg-hero rounded-[var(--sm-radius-lg)]  shadow-2xl shadow-[var(--sm-color-info-600)]/30 mb-6 border-b-8 border-white/10 relative overflow-hidden">
+          <div className="sm-bg-hero rounded-[var(--sm-radius-lg)]  sm-shadow-2 shadow-[var(--sm-color-info-600)]/30 mb-6 border-b-8 border-white/10 relative overflow-hidden">
             <div className="absolute inset-0 sm-bg-hero "></div>
 
             <div className="relative z-10 px-8 py-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -215,20 +228,20 @@ export default function ParentIssuesPage() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-6 bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-white/10 shadow-2xl">
-                <div className="text-center">
+              <div className="flex items-center flex-col sm:flex-row gap-6 bg-white/5  backdrop-blur-md p-6 rounded-[var(--sm-radius-lg)] border border-white/10 shadow-2xl">
+                <div className="text-center w-1/4 md:w-auto">
                   <p className="text-xs font-black uppercase text-[var(--sm-color-info-400)] tracking-widest">Wszystkich</p>
                   <p className="text-2xl font-black text-[var(--sm-color-surface)]">{issues.length}</p>
                 </div>
-                <div className="w-px h-10 bg-white/10" />
-                <div className="text-center">
+                <div className="md:w-px h-10 bg-white/10" />
+                <div className="text-center w-1/4 md:w-auto">
                   <p className="text-xs font-black uppercase text-[var(--sm-color-negative-500)] tracking-widest">Krytyczne</p>
                   <p className="text-2xl font-black text-[var(--sm-color-surface)]">{issues.filter(i => i.priority === 'HIGH').length}</p>
                 </div>
-                <div className="w-px h-10 bg-white/10" />
+                <div className="md:w-px h-10 bg-white/10"  />
 
 
-                <button className="bg-white hover:bg-indigo-50 text-[var(--sm-color-text-primary)] cursor-pointer w-12 h-12 flex items-center justify-center rounded-xl transition-all shadow-lg active:scale-95" onClick={() => changeIsShowed(prev => !prev)}>
+                <button className="bg-white hover:bg-indigo-50 text-[var(--sm-color-text-primary)] cursor-pointer w-auto h-12 flex items-center justify-center rounded-[var(--sm-radius-sm)] transition-all sm-shadow-1 active:scale-95" onClick={() => changeIsOverlayShowed(prev => !prev)}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
@@ -247,7 +260,7 @@ export default function ParentIssuesPage() {
                   <button
                     key={s}
                     onClick={() => setFilterStatus(s)}
-                    className={`px-5 py-2 rounded-xl text-xs cursor-pointer font-black uppercase tracking-tighter transition-all ${filterStatus === s
+                    className={`px-5 py-2 rounded-[var(--sm-radius-sm)] text-xs cursor-pointer font-black uppercase tracking-tighter transition-all ${filterStatus === s
                         ? 'bg-[var(--sm-color-info-600)] text-white shadow-md shadow-indigo-200'
                         : 'bg-white text-slate-500 border border-slate-200 hover:border-indigo-300'
                       }`}
@@ -309,7 +322,7 @@ export default function ParentIssuesPage() {
                           {new Date(issue.createdAt).toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' })}
                         </p>
                       </div>
-                      <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:bg-[var(--sm-color-info-600)] group-hover:text-white group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300">
+                      <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:bg-[var(--sm-color-info-600)] group-hover:text-white group-hover:sm-shadow-1 group-hover:shadow-indigo-500/30 transition-all duration-300">
                         <svg className="w-5 h-5 translate-x-px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" strokeWidth="3" /></svg>
                       </div>
                     </div>
