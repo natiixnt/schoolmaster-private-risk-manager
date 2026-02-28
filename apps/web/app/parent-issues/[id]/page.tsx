@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { authFetch } from 'apps/web/lib/auth';
 import Link from 'next/link';
-
+import LogoWhite from '../../components/LogoWhite';
 // --- INTERFEJSY (Logika bez zmian) ---
 interface Author { id: string; name: string; }
 interface Comment { id: string; comment: string; createdAt: string; author: Author; }
@@ -35,6 +35,7 @@ export default function IssueDetailsPage() {
         setLoading(true);
         const data = await authFetch<IssueDetails>(`/parent-issues/${params.id}`);
         setIssue(data);
+        console.log(data)
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -116,38 +117,20 @@ export default function IssueDetailsPage() {
               </div>
               <div className="space-y-3">
                 <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--sm-color-on-primary)]">
-                  Centrum Zgłoszeń
+                  {issue.title}
                 </h1>
                 <p className="text-[var(--sm-color-neutral-100)] text-lg max-w-xl font-[var(--sm-font-weight-medium)]">
-                  Zarządzaj komunikacją i rozwiązuj problemy zgłoszone przez opiekunów.
+                  {issue.category}
                 </p>
               </div>
 
-              <div className="flex items-center flex-col sm:flex-row gap-6 bg-white/5  backdrop-blur-md p-6 rounded-[var(--sm-radius-lg)] border border-white/10 shadow-2xl">
-                <div className="text-center w-1/4 md:w-auto">
-                  <p className="text-xs font-black uppercase text-[var(--sm-color-info-400)] tracking-widest">Wszystkich</p>
-                  <p className="text-2xl font-black text-[var(--sm-color-surface)]"></p>
-                </div>
-                <div className="md:w-px h-10 bg-white/10" />
-                <div className="text-center w-1/4 md:w-auto">
-                  <p className="text-xs font-black uppercase text-[var(--sm-color-negative-500)] tracking-widest">Krytyczne</p>
-                  <p className="text-2xl font-black text-[var(--sm-color-surface)]"></p>
-                </div>
-                <div className="md:w-px h-10 bg-white/10"  />
-
-
-                <button className="bg-white hover:bg-indigo-50 text-[var(--sm-color-text-primary)] cursor-pointer w-auto h-12 flex items-center justify-center rounded-[var(--sm-radius-sm)] transition-all sm-shadow-1 active:scale-95">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                  </svg>
-                </button>
-              </div>
+             <LogoWhite className="w-85 absolute h-full  top-0 right-0 left-100% bottom-15 z-50 hidden pointer-events-none md:block"/>
             </div>
           </div>
         </div>
     
       
-      <div className="mx-auto max-w-7xl px-8 lg:px-16 -mt-16 relative z-20">
+      <div className="mx-auto max-w-7xl px-8 lg:px-16  relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
          
@@ -156,7 +139,7 @@ export default function IssueDetailsPage() {
            
         {/*     <div className="bg-white rounded-[2rem] p-10 shadow-xl border-2 border-transparent">
                <div className="flex items-center gap-3 mb-6">
-                 <div className="w-1.5 h-6 bg-[#5F5AFC] rounded-full" />
+                 <div className="w-1.5 h-6 bg-[var(--sm-color-info-600)] rounded-full" />
                  <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Opis zgłoszenia</h3>
                </div>
                <p className="text-xl text-slate-700 leading-relaxed font-bold">
@@ -170,26 +153,22 @@ export default function IssueDetailsPage() {
                
                <div className="space-y-6">
                   {issue.comments.map((comment) => (
-                    <div key={comment.id} className="bg-white border-2 border-[#5F5AFC] rounded-[2rem] p-8 shadow-sm hover:shadow-md transition-all">
-                      <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-[#1e293b] rounded-full flex items-center justify-center text-xs font-black text-white">
-                          {comment.author.name.substring(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="text-[13px] font-black text-slate-900 uppercase tracking-tight">{comment.author.name}</p>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase">{formatDate(comment.createdAt)}</p>
-                        </div>
+                    <div key={comment.id}  className="bg-[var(--sm-color-surface)] flex w-full border-3 border-[var(--sm-color-info-600)] rounded-[var(--sm-radius-lg)] p-8 sm-shadow-2 hover:shadow-md ">
+                      <div className='bg-[var(--sm-color-neutral-800)] rounded-[var(--sm-radius-md)] text-center text-[var(--sm-color-on-primary)] flex items-center justify-center font-[var(--sm-font-weight-bold)] w-12 h-12 p-2'>
+                        <span>{comment.author.name.slice(0,2).toUpperCase()}</span>
                       </div>
-                      <p className="text-slate-600 text-base leading-relaxed font-medium italic">
-                        "{comment.comment}"
-                      </p>
+                      <div className='ml-2'>
+                        <h1 className='text-xl text-[var(--sm-color-text-primary)] font-[var(--sm-font-weight-bold)]'>{comment.comment}</h1>
+                        <p className='text-lg'>{formatDate(comment.createdAt)}</p>
+
+                      </div>
                     </div>
                   ))}
 
                   
                   <div className="bg-white border-2 border-slate-100 rounded-[2.5rem] p-8 shadow-sm">
                     <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-[#5F5AFC] rounded-full flex items-center justify-center text-xs font-black text-white">
+                        <div className="w-12 h-12 bg-[var(--sm-color-info-600)] rounded-full flex items-center justify-center text-xs font-black text-white">
                           AD
                         </div>
                         <p className="text-[11px] font-black text-slate-300 uppercase tracking-widest">Wyślij oficjalną odpowiedź...</p>
@@ -197,11 +176,11 @@ export default function IssueDetailsPage() {
                     <textarea 
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
-                        className="w-full bg-slate-50 border-none rounded-2xl p-6 text-sm font-bold text-slate-700 min-h-[120px] focus:ring-2 focus:ring-[#5F5AFC] transition-all"
+                        className="w-full bg-slate-50 border-none rounded-2xl p-6 text-sm font-bold text-slate-700 min-h-[120px] focus:ring-2 focus:ring-[var(--sm-color-info-600)] transition-all"
                         placeholder="Treść odpowiedzi..."
                     />
                     <div className="mt-4 flex justify-end">
-                        <button className="bg-[#5F5AFC] text-white px-10 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all active:scale-95">
+                        <button className="bg-[var(--sm-color-info-600)] text-white px-10 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all active:scale-95">
                             Wyślij Odpowiedź
                         </button>
                     </div>
@@ -213,7 +192,7 @@ export default function IssueDetailsPage() {
           {/* RIGHT COLUMN: SIDEBAR */}
           <div className="lg:col-span-4 space-y-8">
             <div className="bg-white rounded-[2.5rem] p-10 shadow-xl border border-slate-50 relative overflow-hidden">
-              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-12">Metadane sprawy</h3>
+              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-12">Dane sytuacji</h3>
               
               <div className="space-y-12">
                 {/* Status Section */}
@@ -229,10 +208,17 @@ export default function IssueDetailsPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Student</span>
                   <div className="text-right">
-                    <p className="text-sm font-black text-[#5F5AFC] uppercase tracking-tighter">
+                    <p className="text-sm font-black text-[var(--sm-color-info-600)] uppercase tracking-tighter">
                        {issue.student ? `${issue.student.firstName} ${issue.student.lastName}` : 'Zgłoszenie Ogólne'}
                     </p>
-                    <p className="text-[9px] font-bold text-slate-300 uppercase">Obiekt powiązany</p>
+                    
+                  </div>
+                </div>
+
+                <div className='flex items-center justify-between'>
+                  <span>Klasa</span>
+                  <div>
+                    <p>{issue.student?.class.name}</p>
                   </div>
                 </div>
 
@@ -241,7 +227,7 @@ export default function IssueDetailsPage() {
                   <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
                     <p className="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">Data Rejestracji</p>
                     <div className="flex items-center gap-3">
-                        <svg className="w-4 h-4 text-[#5F5AFC]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeWidth="2.5"/></svg>
+                        <svg className="w-4 h-4 text-[var(--sm-color-info-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeWidth="2.5"/></svg>
                         <span className="text-xs font-black text-slate-700">{formatDate(issue.createdAt)}</span>
                     </div>
                   </div>
