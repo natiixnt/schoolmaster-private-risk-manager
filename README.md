@@ -47,17 +47,17 @@ Expected dev behavior:
 - Startup: with warm cache, Next.js should be ready in seconds; first page compile should be in the low seconds range on a typical laptop.
 
 ## Scripts (root)
-- `npm run dev:bootstrap` – start Postgres, migrate, seed, and run dev servers (API on 3001, web on 3000)
-- `npm run dev:apps` – turbo run dev across apps (API + web) without db bootstrap
-- `npm run dev:api` – API dev only (3001)
-- `npm run dev:web` – Web dev only (3000)
-- `npm run db:up` – start Postgres via docker-compose.dev.yml
-- `npm run db:migrate` – apply Prisma migrations for API (uses `.env` for DATABASE_URL)
-- `npm run db:seed` – seed demo data (idempotent)
-- `npm run dev` – alias of `dev:apps`
-- `npm run build` – turbo build
-- `npm run lint` – turbo lint
-- `npm run seed` – seeds via API workspace
+- `npm run dev:bootstrap` - start Postgres, migrate, seed, and run dev servers (API on 3001, web on 3000)
+- `npm run dev:apps` - turbo run dev across apps (API + web) without db bootstrap
+- `npm run dev:api` - API dev only (3001)
+- `npm run dev:web` - Web dev only (3000)
+- `npm run db:up` - start Postgres via docker-compose.dev.yml
+- `npm run db:migrate` - apply Prisma migrations for API (uses `.env` for DATABASE_URL)
+- `npm run db:seed` - seed demo data (idempotent)
+- `npm run dev` - alias of `dev:apps`
+- `npm run build` - turbo build
+- `npm run lint` - turbo lint
+- `npm run seed` - seeds via API workspace
 
 ## Backend (apps/api)
 - NestJS app on port 3001 (configurable via `PORT`).
@@ -72,9 +72,9 @@ Expected dev behavior:
 
 ## Frontend (apps/web)
 Minimal app router pages for dev/testing only:
-- `/` – health check display
-- `/auth/login` – login form, stores tokens in `localStorage`
-- `/dev/tools` – upload students CSV, list classes, and fetch students per class
+- `/` - health check display
+- `/auth/login` - login form, stores tokens in `localStorage`
+- `/dev/tools` - upload students CSV, list classes, and fetch students per class
 
 ## Docker
 - `infra/docker/docker-compose.dev.yml` starts Postgres with default creds `schoolmaster/schoolmaster` and DB `schoolmaster` on port 5432.
