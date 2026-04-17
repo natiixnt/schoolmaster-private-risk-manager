@@ -1,67 +1,23 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-const accessTokenKey = 'accessToken';
-const refreshTokenKey = 'refreshToken';
+// Tokeny są przechowywane w ciasteczkach HttpOnly ustawianych przez backend.
+// Nie można ich czytać z JavaScript - to celowe zabezpieczenie przed XSS.
+// Poniższe funkcje są pozostawione jako stuby dla kompatybilności wstecznej.
+export const getAccessToken = (): null => null;
+export const getRefreshToken = (): null => null;
+export const clearTokens = (): void => { /* obsługiwane przez /auth/logout na backendzie */ };
 
-export type AuthTokens = {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn?: number;
-};
+let refreshPromise: Promise<boolean> | null = null;
 
-const isBrowser = () => typeof window !== 'undefined';
-
-export const getAccessToken = () => {
-  if (!isBrowser()) return null;
-  return window.localStorage.getItem(accessTokenKey);
-};
-
-export const getRefreshToken = () => {
-  if (!isBrowser()) return null;
-  return window.localStorage.getItem(refreshTokenKey);
-};
-
-export const setTokens = (tokens: AuthTokens) => {
-  if (!isBrowser()) return;
-  if (tokens.accessToken) {
-    window.localStorage.setItem(accessTokenKey, tokens.accessToken);
-  }
-  if (tokens.refreshToken) {
-    window.localStorage.setItem(refreshTokenKey, tokens.refreshToken);
-  }
-};
-
-export const clearTokens = () => {
-  if (!isBrowser()) return;
-  window.localStorage.removeItem(accessTokenKey);
-  window.localStorage.removeItem(refreshTokenKey);
-};
-
-let refreshPromise: Promise<AuthTokens | null> | null = null;
-
-const requestRefresh = async (): Promise<AuthTokens | null> => {
-  if (!isBrowser()) return null;
-  const refreshToken = getRefreshToken();
-  if (!refreshToken) return null;
+const requestRefresh = async (): Promise<boolean> => {
   if (refreshPromise) return refreshPromise;
 
   refreshPromise = (async () => {
     const res = await fetch(`${apiUrl}/auth/refresh`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
+      credentials: 'include',
     });
-    if (!res.ok) {
-      clearTokens();
-      return null;
-    }
-    const data = await res.json().catch(() => null);
-    if (!data?.accessToken || !data?.refreshToken) {
-      clearTokens();
-      return null;
-    }
-    setTokens(data);
-    return data;
+    return res.ok;
   })();
 
   try {
@@ -75,26 +31,18 @@ export const authFetch = async <T = unknown>(
   path: string,
   options?: RequestInit,
 ): Promise<T> => {
-  let accessToken = getAccessToken();
-  if (!accessToken) {
-    const refreshed = await requestRefresh();
-    accessToken = refreshed?.accessToken ?? null;
-  }
-  if (!accessToken) {
-    throw new Error('No access token. Please login first.');
-  }
+  const doFetch = () =>
+    fetch(`${apiUrl}${path}`, {
+      ...options,
+      credentials: 'include',
+    });
 
-  const doFetch = (token: string) => {
-    const headers = new Headers(options?.headers);
-    headers.set('Authorization', `Bearer ${token}`);
-    return fetch(`${apiUrl}${path}`, { ...options, headers });
-  };
+  let res = await doFetch();
 
-  let res = await doFetch(accessToken);
   if (res.status === 401) {
     const refreshed = await requestRefresh();
-    if (refreshed?.accessToken) {
-      res = await doFetch(refreshed.accessToken);
+    if (refreshed) {
+      res = await doFetch();
     }
   }
 

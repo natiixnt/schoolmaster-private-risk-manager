@@ -374,3 +374,21 @@ model SchoolSettings {
   updatedAt     DateTime @updatedAt
   school        School   @relation(fields: [schoolId], references: [id])
 }
+
+// Dziennik audytowy - Art. 32 RODO: rozliczalność i śledzenie operacji na danych
+model AuditLog {
+  id         String   @id @default(uuid())
+  schoolId   String?
+  userId     String?
+  action     String
+  entityType String
+  entityId   String?
+  details    Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([schoolId])
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

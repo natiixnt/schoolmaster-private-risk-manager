@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import ThemeToggle from '../../../components/ThemeToggle';
-import { authFetch, getAccessToken, getRefreshToken } from '../../../lib/auth';
+import { authFetch } from '../../../lib/auth';
 
 type ClassItem = {
   id: string;
@@ -35,8 +35,7 @@ type ImportResult = {
 };
 
 export default function DevToolsPage() {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [sessionActive, setSessionActive] = useState<boolean | null>(null);
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [students, setStudents] = useState<StudentItem[]>([]);
   const [riskStudents, setRiskStudents] = useState<RiskStudent[]>([]);
@@ -45,21 +44,16 @@ export default function DevToolsPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const syncTokens = () => {
-    setAccessToken(getAccessToken());
-    setRefreshToken(getRefreshToken());
-  };
-
   useEffect(() => {
-    syncTokens();
+    authFetch('/auth/me')
+      .then(() => setSessionActive(true))
+      .catch(() => setSessionActive(false));
   }, []);
 
   const authedFetch = async (path: string, options?: RequestInit) => {
-    try {
-      return await authFetch(path, options);
-    } finally {
-      syncTokens();
-    }
+    const result = await authFetch(path, options);
+    setSessionActive(true);
+    return result;
   };
 
   const loadClasses = async () => {
@@ -146,11 +140,10 @@ export default function DevToolsPage() {
         <ThemeToggle />
       </div>
       <p>
-        Tokens: access {accessToken ? 'loaded' : 'missing'} / refresh{' '}
-        {refreshToken ? 'loaded' : 'missing'} |{' '}
-        {!accessToken && <a href="/auth/login">Go to login</a>}
+        Sesja: {sessionActive === null ? 'sprawdzanie...' : sessionActive ? 'aktywna' : 'nieaktywna'}{' '}
+        {sessionActive === false && <a href="/auth/login">Zaloguj sie</a>}
       </p>
-      {!accessToken && <p>Not logged in. Please <a href="/auth/login">login</a> to use tools.</p>}
+      {sessionActive === false && <p>Nie jestes zalogowany. <a href="/auth/login">Zaloguj sie</a>, aby korzystac z narzedzi.</p>}
       {error && <div className="text-destructive">{error}</div>}
 
       <section>
@@ -162,14 +155,14 @@ export default function DevToolsPage() {
 
       <section>
         <h2>Classes & students</h2>
-        <button onClick={loadClasses} disabled={loading || !accessToken}>
+        <button onClick={loadClasses} disabled={loading || !sessionActive}>
           Load classes
         </button>
         {classes.length > 0 && (
           <ul>
             {classes.map((cls) => (
               <li key={cls.id}>
-                <button onClick={() => loadStudents(cls.id)} disabled={loading || !accessToken}>
+                <button onClick={() => loadStudents(cls.id)} disabled={loading || !sessionActive}>
                   {cls.name} {cls.yearLevel ? `(Year ${cls.yearLevel})` : ''}
                 </button>
               </li>
@@ -186,10 +179,10 @@ export default function DevToolsPage() {
 
       <section>
         <h2>Risk (dev)</h2>
-        <button onClick={loadRisk} disabled={loading || !accessToken}>
+        <button onClick={loadRisk} disabled={loading || !sessionActive}>
           Load risk students
         </button>{' '}
-        <button onClick={recalcRisk} disabled={loading || !accessToken}>
+        <button onClick={recalcRisk} disabled={loading || !sessionActive}>
           Recalculate risk
         </button>
         {riskStudents.length > 0 && <pre>{JSON.stringify(riskStudents, null, 2)}</pre>}

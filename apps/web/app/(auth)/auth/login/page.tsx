@@ -2,15 +2,14 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { setTokens } from '../../../../lib/auth';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 const fallbackError = 'Nie udało się połączyć z serwerem. Spróbuj ponownie.';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('admin@schoolmaster.test');
-  const [password, setPassword] = useState('changeme');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -27,17 +26,15 @@ export default function LoginPage() {
       const res = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.message || 'Login failed');
       }
-      const data = await res.json();
-      if (!data?.accessToken || !data?.refreshToken) {
-        throw new Error('Missing auth token.');
-      }
-      setTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken });
+      // Ciasteczka HttpOnly są ustawiane przez backend - nie ma potrzeby
+      // czytać tokenów z odpowiedzi
       router.push('/dev/tools');
     } catch (err: any) {
       const message = err?.message;

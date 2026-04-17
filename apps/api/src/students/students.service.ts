@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StudentStatus } from '@schoolmaster/core';
 
@@ -53,5 +53,60 @@ export class StudentsService {
     }));
     if (payload.length === 0) return { count: 0 };
     return this.prisma.student.createMany({ data: payload, skipDuplicates: true });
+  }
+
+  // RODO Art. 17 - prawo do bycia zapomnianym: usunięcie wszystkich danych ucznia
+  async deleteStudent(schoolId: string, studentId: string) {
+    const student = await this.prisma.student.findFirst({
+      where: { id: studentId, schoolId },
+    });
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    // Kolejność ma znaczenie: najpierw rekordy zależne, potem główny
+    await this.prisma.$transaction([
+      this.prisma.riskIndicatorValue.deleteMany({ where: { studentId } }),
+      this.prisma.riskScore.deleteMany({ where: { studentId } }),
+      this.prisma.assessment.deleteMany({ where: { studentId } }),
+      this.prisma.attendance.deleteMany({ where: { studentId } }),
+      this.prisma.behaviorEvent.deleteMany({ where: { studentId } }),
+      this.prisma.parentIssueComment.deleteMany({ where: { issue: { studentId } } }),
+      this.prisma.parentIssue.deleteMany({ where: { studentId } }),
+      this.prisma.studentActionItem.deleteMany({ where: { actionPlan: { studentId } } }),
+      this.prisma.studentActionPlan.deleteMany({ where: { studentId } }),
+      this.prisma.student.delete({ where: { id: studentId } }),
+    ]);
+
+    return { deleted: true };
+  }
+
+  // RODO Art. 20 - prawo do przenośności danych: eksport wszystkich danych ucznia
+  async exportStudent(schoolId: string, studentId: string) {
+    const student = await this.prisma.student.findFirst({
+      where: { id: studentId, schoolId },
+      include: {
+        class: true,
+        assessments: { orderBy: { date: 'asc' } },
+        attendances: { orderBy: { date: 'asc' } },
+        behaviorEvents: { orderBy: { date: 'asc' } },
+        riskScores: true,
+        riskIndicatorValues: { include: { indicator: true } },
+        parentIssues: {
+          include: { comments: true },
+          orderBy: { createdAt: 'asc' },
+        },
+        actionPlans: {
+          include: { items: true },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    return student;
   }
 }
