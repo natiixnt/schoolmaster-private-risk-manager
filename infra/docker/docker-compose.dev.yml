@@ -3,17 +3,29 @@ services:
     image: postgres:16-alpine
     container_name: schoolmaster-postgres
     environment:
-      POSTGRES_USER: schoolmaster
-      POSTGRES_PASSWORD: schoolmaster
-      POSTGRES_DB: schoolmaster
+      POSTGRES_USER: ${DB_USER:-schoolmaster}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Ustaw DB_PASSWORD w pliku .env}
+      POSTGRES_DB: ${DB_NAME:-schoolmaster}
+    # Port 5432 dostepny tylko lokalnie - nie wystawiac publicznie w produkcji
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - internal
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U schoolmaster']
-      interval: 5s
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-schoolmaster}']
+      interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+networks:
+  internal:
+    driver: bridge
+
 volumes:
   postgres-data:

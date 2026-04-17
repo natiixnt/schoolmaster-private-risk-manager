@@ -6,5 +6,10 @@ COPY apps/api ./apps/api
 ENV NODE_ENV=production
 RUN npm ci && npm ci --prefix apps/api
 RUN npm run --workspace @schoolmaster/api build
+
+# Uruchamianie jako uzytkownik bez uprawnien roota
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+USER nodejs
+
 EXPOSE 3001
 CMD ["node", "apps/api/dist/main.js"]
