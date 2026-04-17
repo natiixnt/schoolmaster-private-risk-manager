@@ -1,6 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StudentActionItemStatus, StudentActionPlanStatus } from '@prisma/client';
+
+// Dozwolone przejscia statusow planu dzialan
+const ALLOWED_STATUS_TRANSITIONS: Record<StudentActionPlanStatus, StudentActionPlanStatus[]> = {
+  [StudentActionPlanStatus.OPEN]: [StudentActionPlanStatus.IN_PROGRESS, StudentActionPlanStatus.DONE],
+  [StudentActionPlanStatus.IN_PROGRESS]: [StudentActionPlanStatus.DONE, StudentActionPlanStatus.OPEN],
+  [StudentActionPlanStatus.DONE]: [],
+};
 import { CreateActionItemDto } from './dto/create-action-item.dto';
 import { CreateActionPlanDto } from './dto/create-action-plan.dto';
 import { UpdateActionItemDto } from './dto/update-action-item.dto';
@@ -103,6 +110,15 @@ export class ActionPlansService {
     });
     if (!plan) {
       throw new NotFoundException('Action plan not found');
+    }
+
+    if (dto.status && dto.status !== plan.status) {
+      const allowed = ALLOWED_STATUS_TRANSITIONS[plan.status] ?? [];
+      if (!allowed.includes(dto.status)) {
+        throw new BadRequestException(
+          `Niedozwolone przejscie statusu: ${plan.status} -> ${dto.status}`,
+        );
+      }
     }
 
     return this.prisma.studentActionPlan.update({

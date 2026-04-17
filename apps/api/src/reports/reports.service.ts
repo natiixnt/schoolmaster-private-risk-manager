@@ -249,10 +249,17 @@ export class ReportsService {
       throw new NotFoundException('Report not found');
     }
 
-    const fullPath = path.join(getStorageRoot(), report.filePath);
+    const storageRoot = path.resolve(getStorageRoot());
+    const fullPath = path.resolve(storageRoot, report.filePath);
+
+    // Ochrona przed path traversal - sciezka musi byc wewnatrz storage
+    if (!fullPath.startsWith(storageRoot + path.sep) && fullPath !== storageRoot) {
+      throw new NotFoundException('Report file not found');
+    }
+
     try {
       await fs.access(fullPath);
-    } catch (error) {
+    } catch {
       throw new NotFoundException('Report file not found');
     }
 

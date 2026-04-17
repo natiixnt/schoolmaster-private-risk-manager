@@ -270,22 +270,25 @@ export class RiskService {
 
     const definitions = await this.ensureIndicatorDefinitions(student.schoolId);
 
-    await this.prisma.riskIndicatorValue.deleteMany({ where: { studentId } });
-    await this.prisma.riskIndicatorValue.createMany({
-      data: indicatorLevels.map((ind) => ({
-        studentId,
-        indicatorId: definitions[ind.name],
-        value: ind.value as any,
-        level: ind.level,
-        calculatedAt: new Date(),
-      })),
-    });
+    const calculatedAt = new Date();
+    const indicatorData = indicatorLevels.map((ind) => ({
+      studentId,
+      indicatorId: definitions[ind.name],
+      value: ind.value as any,
+      level: ind.level,
+      calculatedAt,
+    }));
 
-    await this.prisma.riskScore.upsert({
-      where: { studentId },
-      update: { score, level, calculatedAt: new Date() },
-      create: { studentId, score, level, calculatedAt: new Date() },
-    });
+    // Atomowa aktualizacja wskaznikow i wyniku ryzyka
+    await this.prisma.$transaction([
+      this.prisma.riskIndicatorValue.deleteMany({ where: { studentId } }),
+      this.prisma.riskIndicatorValue.createMany({ data: indicatorData }),
+      this.prisma.riskScore.upsert({
+        where: { studentId },
+        update: { score, level, calculatedAt },
+        create: { studentId, score, level, calculatedAt },
+      }),
+    ]);
 
     return { student, score, level };
   }
