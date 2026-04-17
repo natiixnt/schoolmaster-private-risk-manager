@@ -23,16 +23,18 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  private getAccessSecret() {
-    return this.configService.get<string>('JWT_SECRET', 'dev_secret');
+  private getAccessSecret(): string {
+    const secret = this.configService.get<string>('JWT_SECRET');
+    if (!secret) throw new Error('JWT_SECRET nie jest ustawiony');
+    return secret;
   }
 
-  private getRefreshSecret() {
-    return (
+  private getRefreshSecret(): string {
+    const secret =
       this.configService.get<string>('JWT_REFRESH_SECRET') ||
-      this.configService.get<string>('REFRESH_TOKEN_SECRET') ||
-      'dev_refresh_secret'
-    );
+      this.configService.get<string>('REFRESH_TOKEN_SECRET');
+    if (!secret) throw new Error('JWT_REFRESH_SECRET nie jest ustawiony');
+    return secret;
   }
 
   private getAccessExpiresIn() {
@@ -183,6 +185,11 @@ export class AuthService {
       user: this.buildUserPayload(user),
       ...tokens,
     };
+  }
+
+  async logout(userId: string) {
+    await this.prisma.refreshToken.deleteMany({ where: { userId } });
+    return { message: 'Wylogowano pomyslnie' };
   }
 
   async me(userId: string) {
