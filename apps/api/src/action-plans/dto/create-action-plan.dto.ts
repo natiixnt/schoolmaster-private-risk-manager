@@ -1,3 +1,8 @@
+import { IsString, MaxLength, MinLength } from 'class-validator';
+
 export class CreateActionPlanDto {
-  goal: string;
+  @IsString()
+  @MinLength(3)
+  @MaxLength(500)
+  goal!: string;
 }

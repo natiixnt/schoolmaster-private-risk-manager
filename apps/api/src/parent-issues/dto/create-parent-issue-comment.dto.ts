@@ -1,3 +1,8 @@
+import { IsString, MaxLength, MinLength } from 'class-validator';
+
 export class CreateParentIssueCommentDto {
-  comment: string;
+  @IsString()
+  @MinLength(1)
+  @MaxLength(2000)
+  comment!: string;
 }

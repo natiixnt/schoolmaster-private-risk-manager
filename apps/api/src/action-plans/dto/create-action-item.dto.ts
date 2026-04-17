@@ -1,5 +1,16 @@
+import { IsDateString, IsOptional, IsString, IsUUID, MaxLength, MinLength } from 'class-validator';
+
 export class CreateActionItemDto {
-  description: string;
+  @IsString()
+  @MinLength(3)
+  @MaxLength(1000)
+  description!: string;
+
+  @IsOptional()
+  @IsUUID()
   ownerUserId?: string;
-  dueDate?: Date | string | null;
+
+  @IsOptional()
+  @IsDateString()
+  dueDate?: string | null;
 }
