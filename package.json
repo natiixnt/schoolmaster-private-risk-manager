@@ -15,7 +15,7 @@
     "dev:api": "npm run --workspace @schoolmaster/api dev",
     "dev:web": "npm run --workspace @schoolmaster/web dev",
     "dev": "npm run dev:apps",
-    "db:up": "docker compose -f infra/docker/docker-compose.dev.yml up -d postgres",
+    "db:up": "docker compose --env-file apps/api/.env -f infra/docker/docker-compose.dev.yml up -d postgres",
     "db:migrate": "dotenv -e .env -- node scripts/wait-for-db.js && dotenv -e .env -- npm run --workspace @schoolmaster/api prisma:deploy",
     "db:seed": "dotenv -e .env -- npm run --workspace @schoolmaster/api seed",
     "dev:bootstrap": "bash ./scripts/dev-bootstrap.sh",
