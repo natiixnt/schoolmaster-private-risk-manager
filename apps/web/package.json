@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@schoolmaster/core": "0.1.0",
-    "lucide-react": "^0.451.0",
+    "@tailwindcss/postcss": "^4.2.2",
     "next": "^14.2.3",
+    "postcss": "^8.5.10",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@schoolmaster/config": "0.1.0",
